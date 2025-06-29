@@ -1,0 +1,118 @@
+# Spanish Menu Cheater - Claude Project Context
+
+## Project Overview
+Building a Progressive Web App (PWA) to help English/Dutch speakers understand Spanish restaurant menus. The app provides instant lookup of menu items with translations, dietary warnings (especially pork/dairy), and price ranges.
+
+## Workflow Approach (Based on Rules)
+
+### Phase 1: PRD Creation ✅ COMPLETED
+- **Rule**: `rules/create_prd.mdc`
+- **Status**: ✅ Done
+- **Output**: `tasks/prd-spanish-menu-cheater.md`
+- **Summary**: Created comprehensive PRD with 23 functional requirements, user stories, technical considerations, and success metrics
+
+### Phase 2: Task Generation (NEXT)
+- **Rule**: `rules/generate_tasks.mdc`
+- **Process**: 
+  1. Analyze the PRD (`tasks/prd-spanish-menu-cheater.md`)
+  2. Generate high-level parent tasks (~5 tasks)
+  3. Wait for user confirmation with "Go"
+  4. Break down into detailed sub-tasks
+  5. Save as `tasks/tasks-prd-spanish-menu-cheater.md`
+
+### Phase 3: Task Implementation (FUTURE)
+- **Rule**: `rules/process_task.mdc`
+- **Process**:
+  1. Execute ONE sub-task at a time
+  2. Wait for user permission between each sub-task
+  3. Mark completed sub-tasks with `[x]`
+  4. When all sub-tasks complete: run tests → stage → clean up → commit → mark parent complete
+  5. Use conventional commit format with descriptive messages
+
+## Technical Architecture
+
+### Platform Decision
+- **Type**: Progressive Web App (PWA)
+- **Hosting**: GitHub Pages (zero cost)
+- **Tech Stack**: HTML5, CSS3, Vanilla JavaScript
+- **Offline**: Service Worker for offline functionality
+- **Mobile**: iPhone-optimized, PWA installable
+
+### Key Features
+- Fuzzy search with auto-suggest
+- English/Dutch language toggle
+- Clear dietary warnings (pork/dairy)
+- Uses existing CSV dataset (200+ items)
+- Spanish-themed design
+
+### Data Source
+- **File**: `data/spanish_menu_items.csv`
+- **Items**: 200+ Spanish menu items
+- **Fields**: Spanish Name, English Translation, Description, Price Range, Pork, Other Meat, Fish/Seafood, Dairy, Vegetarian, Google Search
+
+## Project Structure
+```
+/SpanishMenuCheater/
+├── data/
+│   └── spanish_menu_items.csv
+├── rules/
+│   ├── create_prd.mdc
+│   ├── generate_tasks.mdc
+│   └── process_task.mdc
+├── tasks/
+│   └── prd-spanish-menu-cheater.md
+└── spanish-menu-cheater-project.claude
+```
+
+## Next Immediate Steps
+
+1. **Generate Task List**
+   - Run task generation based on PRD
+   - Create `tasks/tasks-prd-spanish-menu-cheater.md`
+   - Wait for user "Go" approval before sub-task breakdown
+
+2. **GitHub Repository Setup**
+   - Create new GitHub repository
+   - Push current project files
+   - Set up GitHub Pages for eventual deployment
+
+3. **Implementation Phase**
+   - Follow task-by-task implementation
+   - One sub-task at a time with user approval
+   - Proper git commits with conventional format
+
+## Key Requirements Recap
+
+### Must-Have Features
+- Zero hosting cost (GitHub Pages)
+- Offline functionality
+- Fuzzy search for Spanish menu items
+- Dietary warnings: "Contains Pork", "Contains Dairy"
+- English/Dutch language toggle
+- Mobile-first, iPhone-optimized
+- Price ranges as in CSV format
+- Uses existing 200+ item dataset
+
+### Excluded from MVP
+- Voice search (future)
+- Camera recognition (future)
+- Personal favorites (future)
+- User accounts
+- Backend server
+- Analytics/tracking
+
+## Success Criteria
+- 95% search success rate within 3 characters
+- 3-second load time on 3G
+- 100% offline functionality
+- One-handed iPhone operation
+- Zero ongoing costs
+
+## Context for Implementation
+This project follows a structured workflow:
+1. ✅ PRD created with all requirements
+2. 🔄 Generate detailed task list (next step)
+3. ⏳ Implement tasks one-by-one with user approval
+4. ⏳ Deploy to GitHub Pages
+
+The approach ensures clear requirements, manageable development chunks, and proper version control throughout the process.
