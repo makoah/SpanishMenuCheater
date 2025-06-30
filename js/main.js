@@ -43,7 +43,16 @@ class SpanishMenuCheater {
             loadingIndicator: null,
             noResults: null,
             resultsList: null,
-            suggestions: null
+            suggestions: null,
+            filtersSection: null,
+            filterLiked: null,
+            filterHideDisliked: null,
+            filterVegetarian: null,
+            filterNoPork: null,
+            filterNoDairy: null,
+            clearFilters: null,
+            likedCount: null,
+            dislikedCount: null
         };
         
         // Application state
@@ -52,6 +61,13 @@ class SpanishMenuCheater {
             isSearching: false,
             hasResults: false,
             currentQuery: '',
+            filters: {
+                showLikedOnly: false,
+                hideDisliked: false,
+                vegetarian: false,
+                noPork: false,
+                noDairy: false
+            },
             searchResults: [],
             suggestions: []
         };
@@ -146,7 +162,16 @@ class SpanishMenuCheater {
             loadingIndicator: document.getElementById('loading-indicator'),
             noResults: document.getElementById('no-results'),
             resultsList: document.getElementById('results-list'),
-            suggestions: document.getElementById('suggestions')
+            suggestions: document.getElementById('suggestions'),
+            filtersSection: document.querySelector('.filters-section'),
+            filterLiked: document.getElementById('filter-liked'),
+            filterHideDisliked: document.getElementById('filter-hide-disliked'),
+            filterVegetarian: document.getElementById('filter-vegetarian'),
+            filterNoPork: document.getElementById('filter-no-pork'),
+            filterNoDairy: document.getElementById('filter-no-dairy'),
+            clearFilters: document.getElementById('clear-filters'),
+            likedCount: document.getElementById('liked-count'),
+            dislikedCount: document.getElementById('disliked-count')
         };
         
         // Validate that all required elements exist

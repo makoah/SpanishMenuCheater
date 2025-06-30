@@ -71,6 +71,67 @@
             </div>
         </section>
 
+        <!-- Filters Section -->
+        <section class="filters-section" aria-label="Search filters">
+            <div class="filters-container">
+                <div class="filter-group">
+                    <h3 class="filter-group-title">Preferences</h3>
+                    <div class="filter-buttons">
+                        <button id="filter-liked" 
+                                class="filter-btn preference-filter" 
+                                data-filter="liked"
+                                aria-pressed="false">
+                            <span class="filter-icon">❤️</span>
+                            <span class="filter-label">Liked Only</span>
+                            <span class="filter-count" id="liked-count">(0)</span>
+                        </button>
+                        <button id="filter-hide-disliked" 
+                                class="filter-btn preference-filter" 
+                                data-filter="hide-disliked"
+                                aria-pressed="false">
+                            <span class="filter-icon">🚫</span>
+                            <span class="filter-label">Hide Disliked</span>
+                            <span class="filter-count" id="disliked-count">(0)</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <h3 class="filter-group-title">Dietary</h3>
+                    <div class="filter-buttons">
+                        <button id="filter-vegetarian" 
+                                class="filter-btn dietary-filter" 
+                                data-filter="vegetarian"
+                                aria-pressed="false">
+                            <span class="filter-icon">🥬</span>
+                            <span class="filter-label">Vegetarian</span>
+                        </button>
+                        <button id="filter-no-pork" 
+                                class="filter-btn dietary-filter" 
+                                data-filter="no-pork"
+                                aria-pressed="false">
+                            <span class="filter-icon">🚫🐷</span>
+                            <span class="filter-label">No Pork</span>
+                        </button>
+                        <button id="filter-no-dairy" 
+                                class="filter-btn dietary-filter" 
+                                data-filter="no-dairy"
+                                aria-pressed="false">
+                            <span class="filter-icon">🚫🥛</span>
+                            <span class="filter-label">No Dairy</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="filter-actions">
+                    <button id="clear-filters" class="clear-filters-btn">
+                        <span class="filter-icon">🧹</span>
+                        <span class="filter-label">Clear All</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
         <!-- Results Section -->
         <section class="results-section" aria-label="Search results">
             <div id="search-results" class="search-results">
