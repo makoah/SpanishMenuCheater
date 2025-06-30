@@ -366,10 +366,10 @@
   display: inline-block;
   background: linear-gradient(45deg, var(--color-seville-gold), #F4D03F);
   color: var(--color-text-primary);
-  padding: var(--space-xs) var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
   border-radius: var(--radius-md);
   font-weight: var(--font-weight-bold);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-lg);
   border: 1px solid rgba(218, 165, 32, 0.3);
   box-shadow: 0 2px 4px rgba(218, 165, 32, 0.2);
   font-family: var(--font-family-accent);
