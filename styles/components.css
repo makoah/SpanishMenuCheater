@@ -534,6 +534,66 @@
   50% { opacity: 0.7; }
 }
 
+/* Enhanced offline indicator states */
+.offline-indicator.success {
+  background: var(--color-success);
+  animation: none;
+}
+
+.offline-indicator.warning {
+  background: var(--color-warning);
+  animation: pulse 3s infinite;
+}
+
+/* Offline message styling */
+.offline-message,
+.error-message {
+  padding: var(--space-lg);
+  background: var(--color-surface-alt);
+  border-radius: var(--radius-lg);
+  border-left: 4px solid var(--color-primary);
+  margin: var(--space-lg) 0;
+}
+
+.offline-instructions,
+.offline-benefits {
+  margin: var(--space-md) 0;
+  padding: var(--space-md);
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(210, 105, 30, 0.2);
+}
+
+.offline-instructions h3,
+.offline-benefits h3 {
+  color: var(--color-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-sm);
+}
+
+.offline-instructions ol,
+.offline-benefits ul {
+  margin: var(--space-sm) 0;
+  padding-left: var(--space-lg);
+}
+
+.offline-instructions li,
+.offline-benefits li {
+  margin: var(--space-xs) 0;
+  line-height: var(--line-height-relaxed);
+}
+
+.offline-benefits li {
+  list-style: none;
+  position: relative;
+}
+
+.retry-message {
+  text-align: center;
+  margin-top: var(--space-lg);
+}
+
 /* Subtle pulse animation for dietary warnings */
 @keyframes subtle-pulse {
   0%, 100% { 

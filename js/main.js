@@ -222,6 +222,9 @@ class SpanishMenuCheater {
         } catch (error) {
             console.error('❌ Failed to load menu data:', error);
             this.isDataLoaded = false;
+            
+            // Show appropriate error message based on online/offline status
+            this.showDataLoadError(error);
             throw error;
         }
     }
@@ -710,10 +713,171 @@ class SpanishMenuCheater {
         if (this.elements.offlineIndicator) {
             if (this.state.isOnline) {
                 this.elements.offlineIndicator.classList.add('hidden');
+                this.elements.offlineIndicator.textContent = 'Offline';
+                this.elements.offlineIndicator.setAttribute('aria-label', 'Application is online');
             } else {
                 this.elements.offlineIndicator.classList.remove('hidden');
+                
+                // Check if app is ready for offline use
+                this.checkOfflineReadiness().then(isReady => {
+                    if (isReady) {
+                        this.elements.offlineIndicator.textContent = '📴 Offline - All features available';
+                        this.elements.offlineIndicator.setAttribute('aria-label', 'Application is offline but fully functional');
+                        this.elements.offlineIndicator.style.backgroundColor = 'var(--color-success)';
+                    } else {
+                        this.elements.offlineIndicator.textContent = '⚠️ Offline - Limited functionality';
+                        this.elements.offlineIndicator.setAttribute('aria-label', 'Application is offline with limited functionality');
+                        this.elements.offlineIndicator.style.backgroundColor = 'var(--color-warning)';
+                    }
+                });
             }
         }
+        
+        // Update search functionality messaging
+        this.updateSearchPlaceholder();
+    }
+    
+    /**
+     * Check if the app is ready for offline use
+     */
+    async checkOfflineReadiness() {
+        // Check if service worker is available and data is cached
+        if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+            try {
+                // Create a message channel to communicate with the service worker
+                const messageChannel = new MessageChannel();
+                
+                return new Promise((resolve) => {
+                    messageChannel.port1.onmessage = (event) => {
+                        if (event.data && event.data.type === 'OFFLINE_READY_STATUS') {
+                            resolve(event.data.isReady);
+                        } else {
+                            resolve(false);
+                        }
+                    };
+                    
+                    // Send message to service worker to check offline readiness
+                    navigator.serviceWorker.controller.postMessage(
+                        { type: 'CHECK_OFFLINE_READY' },
+                        [messageChannel.port2]
+                    );
+                    
+                    // Timeout after 2 seconds
+                    setTimeout(() => resolve(false), 2000);
+                });
+            } catch (error) {
+                console.warn('Failed to check offline readiness:', error);
+                return false;
+            }
+        }
+        
+        // Fallback: check if data is loaded in memory
+        return this.isDataLoaded && this.dataManager && this.dataManager.getMenuItems().length > 0;
+    }
+    
+    /**
+     * Update search input placeholder based on online/offline status
+     */
+    updateSearchPlaceholder() {
+        if (!this.elements.searchInput) return;
+        
+        const basePlaceholder = "Type a Spanish menu item...";
+        
+        if (!this.state.isOnline) {
+            this.checkOfflineReadiness().then(isReady => {
+                if (isReady) {
+                    this.elements.searchInput.placeholder = basePlaceholder + " (offline mode)";
+                } else {
+                    this.elements.searchInput.placeholder = "Limited offline functionality";
+                }
+            });
+        } else {
+            this.elements.searchInput.placeholder = basePlaceholder;
+        }
+    }
+    
+    /**
+     * Show appropriate error message when data fails to load
+     */
+    showDataLoadError(error) {
+        const welcomeMessage = this.elements.welcomeMessage;
+        if (!welcomeMessage) return;
+        
+        // Hide loading indicator if showing
+        if (this.elements.loadingIndicator) {
+            this.elements.loadingIndicator.classList.add('hidden');
+        }
+        
+        const isOffline = !this.state.isOnline;
+        const isNetworkError = error.name === 'TypeError' || error.message.includes('Failed to fetch');
+        
+        if (isOffline || isNetworkError) {
+            welcomeMessage.innerHTML = `
+                <h2>📴 Offline Mode</h2>
+                <div class="offline-message">
+                    <p><strong>No internet connection detected.</strong></p>
+                    <p>Spanish Menu Cheater is designed to work completely offline once the data has been downloaded.</p>
+                    
+                    <div class="offline-instructions">
+                        <h3>To use offline features:</h3>
+                        <ol>
+                            <li>Connect to the internet temporarily</li>
+                            <li>Refresh this page to download menu data</li>
+                            <li>Once loaded, the app works fully offline</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="offline-benefits">
+                        <h3>When fully cached, you can:</h3>
+                        <ul>
+                            <li>✅ Search 200+ Spanish menu items</li>
+                            <li>✅ View English and Dutch translations</li>
+                            <li>✅ Check dietary information (pork, dairy, etc.)</li>
+                            <li>✅ Use fuzzy search with typo tolerance</li>
+                            <li>✅ Switch between languages</li>
+                        </ul>
+                    </div>
+                    
+                    <p class="retry-message">
+                        <button id="retry-data-load" class="btn btn-primary">
+                            🔄 Try Again
+                        </button>
+                    </p>
+                </div>
+            `;
+            
+            // Add retry functionality
+            const retryButton = document.getElementById('retry-data-load');
+            if (retryButton) {
+                retryButton.addEventListener('click', () => {
+                    this.initializeAfterDOM();
+                });
+            }
+        } else {
+            welcomeMessage.innerHTML = `
+                <h2>⚠️ Data Loading Error</h2>
+                <div class="error-message">
+                    <p>Failed to load Spanish menu data.</p>
+                    <p>Please check your internet connection and try again.</p>
+                    
+                    <p class="retry-message">
+                        <button id="retry-data-load" class="btn btn-primary">
+                            🔄 Retry
+                        </button>
+                    </p>
+                </div>
+            `;
+            
+            // Add retry functionality
+            const retryButton = document.getElementById('retry-data-load');
+            if (retryButton) {
+                retryButton.addEventListener('click', () => {
+                    this.initializeAfterDOM();
+                });
+            }
+        }
+        
+        welcomeMessage.classList.remove('hidden');
     }
     
     /**
