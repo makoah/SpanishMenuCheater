@@ -176,6 +176,139 @@
 }
 
 /* ===================================
+   Preference Button Components
+   =================================== */
+
+/* Preference Buttons Container */
+.preference-buttons {
+  display: flex;
+  gap: var(--space-xs);
+  align-items: center;
+  margin-right: var(--space-sm);
+}
+
+/* Individual Preference Button */
+.preference-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  touch-action: manipulation;
+  
+  /* Mobile touch targets */
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.preference-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.preference-btn:active {
+  transform: translateY(0);
+}
+
+/* Button Icons */
+.preference-btn .btn-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.preference-btn .btn-label {
+  font-size: var(--font-size-xs);
+}
+
+/* Like Button States */
+.like-btn {
+  border-color: rgba(220, 53, 69, 0.2);
+}
+
+.like-btn:hover {
+  border-color: rgba(220, 53, 69, 0.4);
+  background: rgba(220, 53, 69, 0.05);
+}
+
+.like-btn.active {
+  border-color: #dc3545;
+  background: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+}
+
+.like-btn.active .btn-icon {
+  filter: drop-shadow(0 0 4px rgba(220, 53, 69, 0.3));
+}
+
+/* Dislike Button States */
+.dislike-btn {
+  border-color: rgba(108, 117, 125, 0.2);
+}
+
+.dislike-btn:hover {
+  border-color: rgba(108, 117, 125, 0.4);
+  background: rgba(108, 117, 125, 0.05);
+}
+
+.dislike-btn.active {
+  border-color: #6c757d;
+  background: rgba(108, 117, 125, 0.1);
+  color: #6c757d;
+}
+
+.dislike-btn.active .btn-icon {
+  filter: drop-shadow(0 0 4px rgba(108, 117, 125, 0.3));
+}
+
+/* Result Actions Layout */
+.result-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--space-sm);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--color-border);
+}
+
+/* Mobile Responsive Preferences */
+@media (max-width: 480px) {
+  .preference-buttons {
+    gap: var(--space-xs);
+  }
+  
+  .preference-btn {
+    padding: var(--space-xs);
+    min-width: 40px;
+  }
+  
+  .preference-btn .btn-label {
+    display: none; /* Hide labels on very small screens */
+  }
+  
+  .preference-btn .btn-icon {
+    font-size: 1.1rem;
+  }
+  
+  .result-actions {
+    flex-direction: column;
+    gap: var(--space-sm);
+    align-items: stretch;
+  }
+  
+  .preference-buttons {
+    justify-content: center;
+  }
+}
+
+/* ===================================
    Search Components
    =================================== */
 

@@ -9,6 +9,7 @@
 import { DataManager } from './dataManager.js';
 import { SearchEngine } from './searchEngine.js';
 import { UpdateManager } from './updateManager.js';
+import { PreferenceManager } from './preferenceManager.js';
 // import { UIController } from './uiController.js';
 // import { LanguageManager } from './languageManager.js';
 // import { PWAManager } from './pwaManager.js';
@@ -27,6 +28,7 @@ class SpanishMenuCheater {
         this.dataManager = null;
         this.searchEngine = null;
         this.updateManager = null;
+        this.preferenceManager = null;
         this.uiController = null;
         this.languageManager = null;
         this.pwaManager = null;
@@ -194,6 +196,9 @@ class SpanishMenuCheater {
         
         // Initialize UpdateManager
         this.updateManager = new UpdateManager();
+        
+        // Initialize PreferenceManager
+        this.preferenceManager = new PreferenceManager();
         
         // TODO: Initialize other modules when they are created
         // this.uiController = new UIController();
@@ -610,6 +615,11 @@ class SpanishMenuCheater {
         const translationDescription = this.currentLanguage === 'nl' ? item.dutchDescription : item.description;
         const visualExampleText = this.currentLanguage === 'nl' ? 'Bekijk Voorbeelden' : 'See Visual Examples';
         
+        // Get current preference state
+        const preference = this.preferenceManager.getPreference(item.id);
+        const isLiked = preference === 'liked';
+        const isDisliked = preference === 'disliked';
+        
         card.innerHTML = `
             <div class="result-header">
                 <h3 class="result-spanish">${this.escapeHtml(item.spanishName)}</h3>
@@ -618,17 +628,126 @@ class SpanishMenuCheater {
             <h4 class="result-english">${this.escapeHtml(translationName)}</h4>
             ${translationDescription ? `<p class="result-description">${this.escapeHtml(translationDescription)}</p>` : ''}
             ${dietaryTags.length > 0 ? `<div class="dietary-info">${dietaryTags.join('')}</div>` : ''}
-            ${item.googleSearchUrl ? `
-                <div class="result-actions">
+            <div class="result-actions">
+                <div class="preference-buttons">
+                    <button class="preference-btn like-btn ${isLiked ? 'active' : ''}" 
+                            data-item-id="${item.id}" 
+                            data-action="like"
+                            aria-label="Like this item">
+                        <span class="btn-icon">${isLiked ? '❤️' : '🤍'}</span>
+                        <span class="btn-label">Like</span>
+                    </button>
+                    <button class="preference-btn dislike-btn ${isDisliked ? 'active' : ''}" 
+                            data-item-id="${item.id}" 
+                            data-action="dislike"
+                            aria-label="Dislike this item">
+                        <span class="btn-icon">${isDisliked ? '👎' : '👎🏻'}</span>
+                        <span class="btn-label">Pass</span>
+                    </button>
+                </div>
+                ${item.googleSearchUrl ? `
                     <a href="${this.escapeHtml(item.googleSearchUrl)}" target="_blank" rel="noopener noreferrer" class="visual-example-link">
                         <span class="link-icon">🖼️</span>
                         ${visualExampleText}
                     </a>
-                </div>
-            ` : ''}
+                ` : ''}
+            </div>
         `;
         
+        // Add event listeners for preference buttons
+        this.addPreferenceButtonListeners(card, item);
+        
         return card;
+    }
+    
+    /**
+     * Add event listeners for preference buttons
+     */
+    addPreferenceButtonListeners(card, item) {
+        const likeBtn = card.querySelector('.like-btn');
+        const dislikeBtn = card.querySelector('.dislike-btn');
+        
+        if (likeBtn) {
+            likeBtn.addEventListener('click', (event) => {
+                event.preventDefault();
+                this.handlePreferenceClick(item.id, 'like', likeBtn, dislikeBtn);
+            });
+        }
+        
+        if (dislikeBtn) {
+            dislikeBtn.addEventListener('click', (event) => {
+                event.preventDefault();
+                this.handlePreferenceClick(item.id, 'dislike', likeBtn, dislikeBtn);
+            });
+        }
+    }
+    
+    /**
+     * Handle preference button clicks
+     */
+    handlePreferenceClick(itemId, action, likeBtn, dislikeBtn) {
+        try {
+            const currentPreference = this.preferenceManager.getPreference(itemId);
+            let newPreference;
+            
+            // Toggle logic: if clicking the same preference, toggle to neutral
+            if (action === 'like') {
+                newPreference = currentPreference === 'liked' ? 'neutral' : 'liked';
+            } else if (action === 'dislike') {
+                newPreference = currentPreference === 'disliked' ? 'neutral' : 'disliked';
+            }
+            
+            // Update preference
+            this.preferenceManager.setPreference(itemId, newPreference);
+            
+            // Update button states with visual feedback
+            this.updatePreferenceButtons(likeBtn, dislikeBtn, newPreference);
+            
+            console.log(`[App] Preference updated: ${itemId} → ${newPreference}`);
+            
+        } catch (error) {
+            console.error('[App] Error handling preference click:', error);
+        }
+    }
+    
+    /**
+     * Update preference button visual states
+     */
+    updatePreferenceButtons(likeBtn, dislikeBtn, preference) {
+        // Reset all buttons
+        likeBtn.classList.remove('active');
+        dislikeBtn.classList.remove('active');
+        
+        // Update icons and states
+        const likeIcon = likeBtn.querySelector('.btn-icon');
+        const dislikeIcon = dislikeBtn.querySelector('.btn-icon');
+        
+        switch (preference) {
+            case 'liked':
+                likeBtn.classList.add('active');
+                likeIcon.textContent = '❤️';
+                dislikeIcon.textContent = '👎🏻';
+                break;
+            case 'disliked':
+                dislikeBtn.classList.add('active');
+                likeIcon.textContent = '🤍';
+                dislikeIcon.textContent = '👎';
+                break;
+            case 'neutral':
+            default:
+                likeIcon.textContent = '🤍';
+                dislikeIcon.textContent = '👎🏻';
+                break;
+        }
+        
+        // Add visual feedback animation
+        const activeBtn = preference === 'liked' ? likeBtn : (preference === 'disliked' ? dislikeBtn : null);
+        if (activeBtn) {
+            activeBtn.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                activeBtn.style.transform = '';
+            }, 150);
+        }
     }
     
     /**
