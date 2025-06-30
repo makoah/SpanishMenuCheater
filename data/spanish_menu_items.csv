@@ -17,19 +17,19 @@ Atún,Tuna,Tonijn,"Tuna served in various ways, often as tapas","Tonijn geservee
 Bacalao,Codfish,Kabeljauw,Salted codfish prepared in various ways,Gezouten kabeljauw bereid op verschillende manieren,€10-14,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=bacalao%20spanish&tbm=isch
 Berenjenas con Miel,Eggplant with Honey,Aubergine met Honing,Fried eggplant slices drizzled with honey,Gebakken aubergineplakken met honing gedruppeld,€6-8,FALSE,FALSE,FALSE,FALSE,TRUE,https://www.google.com/search?q=berenjenas%20con%20miel&tbm=isch
 Besugo,Sea Bream,Zeebrasem,Grilled or baked sea bream,Gegrilde of gebakken zeebrasem,€12-16,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=besugo%20pescado&tbm=isch
-Bistec,Steak,Grilled beef steak,€14-20,FALSE,TRUE,FALSE,FALSE,FALSE,https://www.google.com/search?q=bistec%20spanish&tbm=isch
-Bocadillo,Sandwich,Baguette sandwich with various fillings,€3-6,FALSE,FALSE,FALSE,FALSE,FALSE,https://www.google.com/search?q=bocadillo%20spanish&tbm=isch
-Bonito,Bonito Tuna,"Fresh bonito tuna, grilled or canned",€10-14,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=bonito%20del%20norte&tbm=isch
-Boquerones,Marinated Anchovies,Fresh anchovies marinated in vinegar and olive oil,€6-8,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=boquerones%20en%20vinagre&tbm=isch
-Bravas,Spicy Potatoes,Fried potato cubes with spicy tomato sauce,€4-6,FALSE,FALSE,FALSE,FALSE,TRUE,https://www.google.com/search?q=patatas%20bravas&tbm=isch
-Brocheta,Skewer,Mixed meat or vegetable skewers,€8-12,FALSE,TRUE,FALSE,FALSE,FALSE,https://www.google.com/search?q=brochetas%20spanish&tbm=isch
-Buñuelos,Fritters,Sweet or savory fried dough balls,€3-5,FALSE,FALSE,FALSE,TRUE,FALSE,https://www.google.com/search?q=bunuelos%20spanish&tbm=isch
-Burger,Hamburger,Beef burger with various toppings,€8-12,FALSE,TRUE,FALSE,FALSE,FALSE,https://www.google.com/search?q=hamburguesa%20spanish&tbm=isch
-Caballa,Mackerel,"Grilled mackerel, often with vegetables",€9-12,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=caballa%20pescado&tbm=isch
-Cachopo,Stuffed Veal,"Veal stuffed with ham and cheese, breaded",€15-18,FALSE,TRUE,FALSE,TRUE,FALSE,https://www.google.com/search?q=cachopo%20asturiano&tbm=isch
-Caesar Salad,Ensalada César,Romaine lettuce with caesar dressing and parmesan,€7-10,FALSE,FALSE,FALSE,TRUE,FALSE,https://www.google.com/search?q=ensalada%20cesar&tbm=isch
-Calabacín,Zucchini,Grilled or stuffed zucchini,€6-8,FALSE,FALSE,FALSE,FALSE,TRUE,https://www.google.com/search?q=calabacin%20spanish&tbm=isch
-Calamares a la Romana,Fried Squid Rings,Battered and fried squid rings,€8-10,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=calamares%20a%20la%20romana&tbm=isch
+Bistec,Steak,Biefstuk,Grilled beef steak,Gegrilde biefstuk,€14-20,FALSE,TRUE,FALSE,FALSE,FALSE,https://www.google.com/search?q=bistec%20spanish&tbm=isch
+Bocadillo,Sandwich,Broodje,Baguette sandwich with various fillings,Baguette broodje met verschillende vullingen,€3-6,FALSE,FALSE,FALSE,FALSE,FALSE,https://www.google.com/search?q=bocadillo%20spanish&tbm=isch
+Bonito,Bonito Tuna,Bonito Tonijn,"Fresh bonito tuna, grilled or canned","Verse bonito tonijn, gegrild of ingeblikt",€10-14,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=bonito%20del%20norte&tbm=isch
+Boquerones,Marinated Anchovies,Gemarineerde Ansjovis,Fresh anchovies marinated in vinegar and olive oil,Verse ansjovis gemarineerd in azijn en olijfolie,€6-8,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=boquerones%20en%20vinagre&tbm=isch
+Bravas,Spicy Potatoes,Pittige Aardappeltjes,Fried potato cubes with spicy tomato sauce,Gebakken aardappelblokjes met pittige tomatensaus,€4-6,FALSE,FALSE,FALSE,FALSE,TRUE,https://www.google.com/search?q=patatas%20bravas&tbm=isch
+Brocheta,Skewer,Spies,Mixed meat or vegetable skewers,Gemengde vlees- of groentespiesjes,€8-12,FALSE,TRUE,FALSE,FALSE,FALSE,https://www.google.com/search?q=brochetas%20spanish&tbm=isch
+Buñuelos,Fritters,Beignets,Sweet or savory fried dough balls,Zoete of hartige gefrituurde deegballetjes,€3-5,FALSE,FALSE,FALSE,TRUE,FALSE,https://www.google.com/search?q=bunuelos%20spanish&tbm=isch
+Burger,Hamburger,Hamburger,Beef burger with various toppings,Rundvleesburger met verschillende toppings,€8-12,FALSE,TRUE,FALSE,FALSE,FALSE,https://www.google.com/search?q=hamburguesa%20spanish&tbm=isch
+Caballa,Mackerel,Makreel,"Grilled mackerel, often with vegetables","Gegrilde makreel, vaak met groenten",€9-12,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=caballa%20pescado&tbm=isch
+Cachopo,Stuffed Veal,Gevulde Kalfsvlees,"Veal stuffed with ham and cheese, breaded","Kalfsvlees gevuld met ham en kaas, gepaneerd",€15-18,FALSE,TRUE,FALSE,TRUE,FALSE,https://www.google.com/search?q=cachopo%20asturiano&tbm=isch
+Caesar Salad,Ensalada César,Caesar Salade,Romaine lettuce with caesar dressing and parmesan,Romeinse sla met caesar dressing en parmezaan,€7-10,FALSE,FALSE,FALSE,TRUE,FALSE,https://www.google.com/search?q=ensalada%20cesar&tbm=isch
+Calabacín,Zucchini,Courgette,Grilled or stuffed zucchini,Gegrilde of gevulde courgette,€6-8,FALSE,FALSE,FALSE,FALSE,TRUE,https://www.google.com/search?q=calabacin%20spanish&tbm=isch
+Calamares a la Romana,Fried Squid Rings,Gefrituurde Inktvisringen,Battered and fried squid rings,Gepaneerde en gefrituurde inktvisringen,€8-10,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=calamares%20a%20la%20romana&tbm=isch
 Calçots,Grilled Green Onions,Grilled spring onions served with romesco sauce,€10-15,FALSE,FALSE,FALSE,FALSE,TRUE,https://www.google.com/search?q=calcots&tbm=isch
 Caldo Gallego,Galician Broth,"Hearty soup with beans, potatoes, greens and pork",€5-7,TRUE,FALSE,FALSE,FALSE,FALSE,https://www.google.com/search?q=caldo%20gallego&tbm=isch
 Canelones,Cannelloni,Pasta tubes stuffed with meat or spinach,€9-12,FALSE,FALSE,FALSE,TRUE,FALSE,https://www.google.com/search?q=canelones%20spanish&tbm=isch
@@ -58,7 +58,7 @@ Cordero,Lamb,Roasted or grilled lamb,€14-18,FALSE,TRUE,FALSE,FALSE,FALSE,https
 Crema Catalana,Catalan Cream,Custard dessert with caramelized sugar top,€5-7,FALSE,FALSE,FALSE,TRUE,FALSE,https://www.google.com/search?q=crema%20catalana&tbm=isch
 Croquetas,Croquettes,Fried breadcrumbed rolls with various fillings,€6-8,FALSE,FALSE,FALSE,TRUE,FALSE,https://www.google.com/search?q=croquetas%20spanish&tbm=isch
 Dátiles con Bacon,Dates with Bacon,Dates wrapped in bacon,€6-8,TRUE,FALSE,FALSE,FALSE,FALSE,https://www.google.com/search?q=datiles%20con%20bacon&tbm=isch
-Dorada,Sea Bream,Grilled whole sea bream,€14-18,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=dorada%20pescado&tbm=isch
+Dorada,Sea Bream,Zeebrasem,Grilled whole sea bream,Gegrilde hele zeebrasem,€14-18,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=dorada%20pescado&tbm=isch
 Duck,Pato,Roasted duck breast or leg,€16-20,FALSE,TRUE,FALSE,FALSE,FALSE,https://www.google.com/search?q=pato%20asado&tbm=isch
 Embutidos,Cold Cuts,Selection of Spanish cured meats,€10-15,TRUE,FALSE,FALSE,FALSE,FALSE,https://www.google.com/search?q=embutidos%20spanish&tbm=isch
 Empanada Gallega,Galician Pie,"Pastry filled with tuna, meat or vegetables",€8-12,FALSE,TRUE,TRUE,FALSE,FALSE,https://www.google.com/search?q=empanada%20gallega&tbm=isch
