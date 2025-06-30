@@ -46,7 +46,7 @@
 - [ ] 4.0 User Interface and Mobile Experience
   - [x] 4.1 Design and implement mobile-optimized search input with proper keyboard support
   - [x] 4.2 Create search results display with proper formatting for dietary info
-  - [ ] 4.3 Build language toggle button with English/Dutch switching
+  - [x] 4.3 Build language toggle button with English/Dutch switching (Basic UI toggle - comprehensive Dutch translations marked for future versions)
   - [ ] 4.4 Implement dietary warning display (pork/dairy alerts) with visual emphasis
   - [ ] 4.5 Add responsive design for various iPhone screen sizes
   - [ ] 4.6 Create Spanish-themed visual styling with appropriate colors and typography
@@ -60,3 +60,11 @@
   - [ ] 5.5 Create PWA icons in required sizes (192x192, 512x512, etc.)
   - [ ] 5.6 Test PWA installation process on iOS Safari
   - [ ] 5.7 Implement app update mechanism for new data versions
+
+## Future Enhancements (Later Versions)
+
+- [ ] 6.0 Enhanced Language Support
+  - [ ] 6.1 Add comprehensive Dutch translations for all menu items (requires sourcing Dutch food translations)
+  - [ ] 6.2 Implement full UI translation system with language persistence
+  - [ ] 6.3 Add German language support for additional European market
+  - [ ] 6.4 Consider integration with translation APIs for dynamic language support
