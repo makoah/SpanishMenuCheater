@@ -235,6 +235,8 @@ class SpanishMenuCheater {
             this.elements.searchInput.addEventListener('input', this.handleSearchInput.bind(this));
             this.elements.searchInput.addEventListener('focus', this.handleSearchFocus.bind(this));
             this.elements.searchInput.addEventListener('blur', this.handleSearchBlur.bind(this));
+            this.elements.searchInput.addEventListener('keydown', this.handleSearchKeydown.bind(this));
+            this.elements.searchInput.addEventListener('keyup', this.handleSearchKeyup.bind(this));
         }
         
         // Clear button event listener
@@ -305,6 +307,94 @@ class SpanishMenuCheater {
         setTimeout(() => {
             this.hideSuggestions();
         }, 150);
+    }
+    
+    /**
+     * Handle search input keydown events
+     */
+    handleSearchKeydown(event) {
+        const key = event.key;
+        
+        // Handle Enter key
+        if (key === 'Enter') {
+            event.preventDefault();
+            const query = this.elements.searchInput.value.trim();
+            if (query.length > 0) {
+                // Force full search on Enter, regardless of query length
+                this.hideSuggestions();
+                this.performSearch(query);
+            }
+            // Blur input to hide mobile keyboard if desired
+            if (this.isMobileDevice()) {
+                this.elements.searchInput.blur();
+            }
+        }
+        
+        // Handle Escape key
+        else if (key === 'Escape') {
+            event.preventDefault();
+            if (this.state.currentQuery) {
+                this.clearSearch();
+            } else {
+                this.elements.searchInput.blur();
+            }
+        }
+        
+        // Handle Arrow keys for suggestion navigation
+        else if (key === 'ArrowDown' || key === 'ArrowUp') {
+            event.preventDefault();
+            this.navigateSuggestions(key === 'ArrowDown' ? 1 : -1);
+        }
+    }
+    
+    /**
+     * Handle search input keyup events
+     */
+    handleSearchKeyup() {
+        // Additional keyup handling if needed
+        // Currently used for potential future enhancements
+    }
+    
+    /**
+     * Navigate through suggestions with arrow keys
+     */
+    navigateSuggestions(direction) {
+        const suggestions = this.elements.suggestions;
+        if (!suggestions || suggestions.classList.contains('hidden')) return;
+        
+        const items = suggestions.querySelectorAll('.suggestion-item');
+        if (items.length === 0) return;
+        
+        let currentIndex = -1;
+        items.forEach((item, index) => {
+            if (item.classList.contains('highlighted')) {
+                currentIndex = index;
+                item.classList.remove('highlighted');
+            }
+        });
+        
+        // Calculate new index
+        currentIndex += direction;
+        if (currentIndex < 0) currentIndex = items.length - 1;
+        if (currentIndex >= items.length) currentIndex = 0;
+        
+        // Highlight new item
+        items[currentIndex].classList.add('highlighted');
+        items[currentIndex].scrollIntoView({ block: 'nearest' });
+        
+        // Update input value with highlighted suggestion
+        const suggestionText = items[currentIndex].querySelector('.suggestion-match')?.textContent;
+        if (suggestionText) {
+            this.elements.searchInput.value = suggestionText;
+        }
+    }
+    
+    /**
+     * Detect if device is mobile
+     */
+    isMobileDevice() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+               window.innerWidth <= 768;
     }
     
     /**

@@ -44,7 +44,7 @@
   - [x] 3.6 Handle edge cases (empty search, no results, special characters)
 
 - [ ] 4.0 User Interface and Mobile Experience
-  - [ ] 4.1 Design and implement mobile-optimized search input with proper keyboard support
+  - [x] 4.1 Design and implement mobile-optimized search input with proper keyboard support
   - [ ] 4.2 Create search results display with proper formatting for dietary info
   - [ ] 4.3 Build language toggle button with English/Dutch switching
   - [ ] 4.4 Implement dietary warning display (pork/dairy alerts) with visual emphasis

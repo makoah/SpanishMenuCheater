@@ -38,6 +38,13 @@
   transition: all var(--transition-normal);
   -webkit-appearance: none;
   appearance: none;
+  
+  /* Mobile-specific optimizations */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  
+  /* Prevent zoom on iOS when input is focused */
+  min-height: 44px; /* iOS minimum touch target */
 }
 
 .search-input:focus {
@@ -581,21 +588,34 @@
 @media (max-width: 768px) {
   .search-input {
     font-size: 16px; /* Prevents zoom on iOS */
+    min-height: 48px; /* Ensure minimum touch target size */
+    padding: var(--space-md);
+    padding-right: 3rem; /* More space for clear button on mobile */
   }
   
   .clear-search {
-    width: 2rem;
-    height: 2rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    min-height: 44px; /* iOS minimum touch target */
+    right: var(--space-xs);
   }
   
   .language-toggle {
     min-width: 3rem;
-    padding: var(--space-sm);
+    min-height: 44px;
+    padding: var(--space-sm) var(--space-md);
   }
   
   .suggestion-item {
     padding: var(--space-md);
-    min-height: 2.75rem;
+    min-height: 48px; /* Larger touch targets for suggestions */
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Improve spacing on mobile */
+  .search-section {
+    padding: 0 var(--space-sm);
   }
 }
 
