@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Spanish Menu Cheater - Quickly translate Spanish menu items with dietary information">
+    <meta name="theme-color" content="#D2691E">
+    
+    <!-- PWA Configuration -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/components.css">
+    
+    <title>Spanish Menu Cheater</title>
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="app-header">
+        <div class="header-content">
+            <h1 class="app-title">Spanish Menu Cheater</h1>
+            <div class="header-controls">
+                <button id="language-toggle" class="language-toggle" aria-label="Switch language">
+                    <span class="language-label">EN</span>
+                </button>
+                <div id="offline-indicator" class="offline-indicator hidden" aria-live="polite">
+                    Offline
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Application Content -->
+    <main class="app-main">
+        <!-- Search Section -->
+        <section class="search-section" aria-label="Menu item search">
+            <div class="search-container">
+                <div class="search-input-wrapper">
+                    <input 
+                        type="search" 
+                        id="search-input" 
+                        class="search-input"
+                        placeholder="Type a Spanish menu item..."
+                        autocomplete="off"
+                        autocorrect="off"
+                        spellcheck="false"
+                        aria-label="Search Spanish menu items"
+                    >
+                    <button id="clear-search" class="clear-search hidden" aria-label="Clear search">
+                        ×
+                    </button>
+                </div>
+                
+                <!-- Auto-suggest dropdown -->
+                <div id="suggestions" class="suggestions hidden" role="listbox" aria-label="Search suggestions">
+                    <!-- Dynamic suggestions will be populated here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="results-section" aria-label="Search results">
+            <div id="search-results" class="search-results">
+                <!-- Welcome message when no search -->
+                <div id="welcome-message" class="welcome-message">
+                    <h2>Welcome to Spanish Menu Cheater</h2>
+                    <p>Start typing a Spanish menu item to see its translation and dietary information.</p>
+                    <div class="example-searches">
+                        <p>Try searching for:</p>
+                        <ul>
+                            <li>"paella"</li>
+                            <li>"jamón"</li>
+                            <li>"gazpacho"</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Loading state -->
+                <div id="loading-indicator" class="loading-indicator hidden">
+                    <div class="spinner"></div>
+                    <p>Loading menu data...</p>
+                </div>
+                
+                <!-- No results message -->
+                <div id="no-results" class="no-results hidden">
+                    <h3>No results found</h3>
+                    <p>Try a different spelling or search term.</p>
+                </div>
+                
+                <!-- Results list -->
+                <div id="results-list" class="results-list hidden">
+                    <!-- Dynamic search results will be populated here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="app-footer">
+        <div class="footer-content">
+            <p class="app-info">
+                Spanish Menu Cheater - Free offline menu translator
+            </p>
+            <p class="data-info">
+                200+ Spanish menu items with dietary information
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Modules -->
+    <script type="module" src="js/main.js"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(registrationError => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

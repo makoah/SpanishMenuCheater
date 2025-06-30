@@ -1,0 +1,79 @@
+{
+  "name": "spanish-menu-cheater",
+  "version": "1.0.0",
+  "description": "A Progressive Web App to help translate Spanish menu items with dietary information",
+  "main": "index.html",
+  "type": "module",
+  "scripts": {
+    "dev": "live-server --port=3000 --host=localhost --open=/ --wait=200",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "build": "echo 'No build process needed - static files only'",
+    "serve": "live-server --port=8080 --host=localhost --open=/ --wait=200",
+    "lint": "echo 'ESLint not configured yet'",
+    "format": "echo 'Prettier not configured yet'"
+  },
+  "keywords": [
+    "pwa",
+    "spanish",
+    "menu",
+    "translator",
+    "restaurant",
+    "dietary",
+    "food",
+    "offline"
+  ],
+  "author": "Spanish Menu Cheater Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/makoah/SpanishMenuCheater.git"
+  },
+  "bugs": {
+    "url": "https://github.com/makoah/SpanishMenuCheater/issues"
+  },
+  "homepage": "https://github.com/makoah/SpanishMenuCheater#readme",
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "live-server": "^1.2.2"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": ["<rootDir>/test/setup.js"],
+    "testMatch": [
+      "**/*.test.js"
+    ],
+    "collectCoverageFrom": [
+      "js/**/*.js",
+      "!js/**/*.test.js",
+      "!**/node_modules/**"
+    ],
+    "coverageDirectory": "coverage",
+    "coverageReporters": [
+      "text",
+      "lcov",
+      "html"
+    ],
+    "moduleFileExtensions": ["js"],
+    "transform": {},
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/coverage/"
+    ],
+    "verbose": true
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "iOS >= 12",
+    "Safari >= 12"
+  ],
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}
