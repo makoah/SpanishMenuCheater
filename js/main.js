@@ -8,6 +8,7 @@
 // Import modules (will be created in subsequent tasks)
 import { DataManager } from './dataManager.js';
 import { SearchEngine } from './searchEngine.js';
+import { UpdateManager } from './updateManager.js';
 // import { UIController } from './uiController.js';
 // import { LanguageManager } from './languageManager.js';
 // import { PWAManager } from './pwaManager.js';
@@ -25,6 +26,7 @@ class SpanishMenuCheater {
         // Module instances (will be initialized later)
         this.dataManager = null;
         this.searchEngine = null;
+        this.updateManager = null;
         this.uiController = null;
         this.languageManager = null;
         this.pwaManager = null;
@@ -78,6 +80,9 @@ class SpanishMenuCheater {
             window.addEventListener('online', this.handleOnlineStatus);
             window.addEventListener('offline', this.handleOfflineStatus);
             window.addEventListener('beforeunload', this.handleBeforeUnload);
+            
+            // Add update event listener
+            document.addEventListener('app-update', this.handleAppUpdate.bind(this));
             
         } catch (error) {
             console.error('❌ Failed to initialize application:', error);
@@ -186,6 +191,9 @@ class SpanishMenuCheater {
         
         // Initialize SearchEngine (after DataManager)
         this.searchEngine = new SearchEngine(this.dataManager);
+        
+        // Initialize UpdateManager
+        this.updateManager = new UpdateManager();
         
         // TODO: Initialize other modules when they are created
         // this.uiController = new UIController();
@@ -910,6 +918,98 @@ class SpanishMenuCheater {
     handleBeforeUnload() {
         console.log('👋 Application shutting down...');
         // TODO: Cleanup resources, save state if needed
+    }
+    
+    /**
+     * Handle app update events
+     */
+    handleAppUpdate(event) {
+        console.log('🔄 App update event received:', event.detail);
+        
+        const { type } = event.detail;
+        
+        switch (type) {
+            case 'data-update':
+                console.log('📊 Data update available - reloading data...');
+                this.handleDataUpdate();
+                break;
+                
+            case 'app-update':
+                console.log('🚀 App update available - will be handled by UpdateManager');
+                break;
+                
+            default:
+                console.log('Unknown update type:', type);
+        }
+    }
+    
+    /**
+     * Handle data updates
+     */
+    async handleDataUpdate() {
+        try {
+            // Show loading state
+            this.showLoadingState('Updating menu data...');
+            
+            // Reload data
+            await this.dataManager.loadMenuData();
+            
+            // Rebuild search index
+            this.searchEngine.buildSearchIndex();
+            
+            // Hide loading state
+            this.hideLoadingState();
+            
+            // Show success message
+            this.showUpdateMessage('Menu data updated successfully! 🍽️');
+            
+            console.log('✅ Data update completed');
+            
+        } catch (error) {
+            console.error('❌ Failed to update data:', error);
+            this.hideLoadingState();
+            this.showUpdateMessage('Failed to update menu data. Please try again later.', 'error');
+        }
+    }
+    
+    /**
+     * Show update message to user
+     */
+    showUpdateMessage(message, type = 'success') {
+        // Create temporary message element
+        const messageEl = document.createElement('div');
+        messageEl.className = `update-message ${type}`;
+        messageEl.style.cssText = `
+            position: fixed;
+            top: var(--space-lg);
+            left: 50%;
+            transform: translateX(-50%);
+            background: ${type === 'error' ? '#DC2626' : '#059669'};
+            color: white;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            z-index: 1002;
+            animation: slideDown 0.3s ease-out;
+            font-weight: 500;
+            text-align: center;
+            max-width: 90vw;
+        `;
+        
+        messageEl.textContent = message;
+        document.body.appendChild(messageEl);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            if (messageEl.parentNode) {
+                messageEl.style.animation = 'slideUp 0.3s ease-in forwards';
+                setTimeout(() => {
+                    if (messageEl.parentNode) {
+                        messageEl.parentNode.removeChild(messageEl);
+                    }
+                }, 300);
+            }
+        }, 3000);
     }
     
     /**

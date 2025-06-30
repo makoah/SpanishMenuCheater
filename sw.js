@@ -281,7 +281,17 @@ self.addEventListener('message', event => {
   }
   
   if (event.data && event.data.type === 'SKIP_WAITING') {
+    console.log('[SW] Skip waiting requested');
     self.skipWaiting();
+  }
+  
+  if (event.data && event.data.type === 'CHECK_VERSION') {
+    // Send back current version
+    event.ports[0].postMessage({
+      type: 'VERSION_INFO',
+      version: CACHE_NAME,
+      dataVersion: DATA_CACHE_NAME
+    });
   }
 });
 
