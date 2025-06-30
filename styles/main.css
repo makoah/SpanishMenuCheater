@@ -306,24 +306,77 @@ body {
 
 /* Mobile First - Base styles above are for mobile */
 
-/* Small screens and up (iPhone SE and larger) */
-@media (min-width: 375px) {
+/* ===================================
+   iPhone-Specific Responsive Design
+   =================================== */
+
+/* iPhone SE (1st & 2nd gen) - 320px width */
+@media (max-width: 320px) {
+  :root {
+    --container-max-width: 18rem; /* 288px */
+    --space-sm: 0.375rem; /* Tighter spacing */
+    --space-md: 0.75rem;
+    --font-size-base: 0.9rem; /* Slightly smaller text */
+  }
+  
+  .app-header {
+    padding: var(--space-sm) var(--space-md);
+  }
+  
+  .app-title {
+    font-size: var(--font-size-lg);
+  }
+  
+  .search-input {
+    height: 2.75rem; /* Smaller input height */
+  }
+  
+  .result-card {
+    padding: var(--space-md); /* Reduced padding on small screens */
+  }
+}
+
+/* iPhone SE (3rd gen) and iPhone 12 mini - 375px width */
+@media (min-width: 321px) and (max-width: 375px) {
+  :root {
+    --container-max-width: 20rem; /* 320px */
+  }
+  
+  .app-header {
+    padding: var(--space-md);
+  }
+  
+  .app-title {
+    font-size: var(--font-size-xl);
+  }
+}
+
+/* iPhone 12/13/14 standard - 390px width */
+@media (min-width: 376px) and (max-width: 390px) {
   :root {
     --container-max-width: 22rem; /* 352px */
   }
-}
-
-/* Medium screens and up (iPhone 12/13/14 and larger) */
-@media (min-width: 390px) {
-  :root {
-    --container-max-width: 24rem; /* 384px */
+  
+  .app-title {
+    font-size: var(--font-size-xl);
   }
 }
 
-/* Large screens and up (iPhone Plus models and larger) */
-@media (min-width: 414px) {
+/* iPhone 12/13/14 Pro - 393px width */
+@media (min-width: 391px) and (max-width: 393px) {
   :root {
-    --container-max-width: 26rem; /* 416px */
+    --container-max-width: 23rem; /* 368px */
+  }
+  
+  .app-title {
+    font-size: var(--font-size-2xl);
+  }
+}
+
+/* iPhone Plus models (6 Plus, 7 Plus, 8 Plus) - 414px width */
+@media (min-width: 394px) and (max-width: 414px) {
+  :root {
+    --container-max-width: 24rem; /* 384px */
   }
   
   .app-title {
@@ -332,6 +385,71 @@ body {
   
   .app-main {
     padding: var(--space-lg);
+  }
+}
+
+/* iPhone 12/13/14 Pro Max - 428px width */
+@media (min-width: 415px) and (max-width: 428px) {
+  :root {
+    --container-max-width: 25rem; /* 400px */
+    --font-size-base: 1.0625rem; /* 17px - better readability */
+  }
+  
+  .app-title {
+    font-size: var(--font-size-3xl);
+  }
+  
+  .search-input {
+    height: var(--search-input-height);
+    font-size: var(--font-size-lg); /* Larger text on big screens */
+  }
+  
+  .app-main {
+    padding: var(--space-lg);
+  }
+}
+
+/* iPhone 14/15 Pro Max and larger - 430px+ width */
+@media (min-width: 429px) and (max-width: 479px) {
+  :root {
+    --container-max-width: 26rem; /* 416px */
+    --font-size-base: 1.0625rem; /* 17px */
+  }
+  
+  .search-section {
+    padding: 0 var(--space-lg);
+  }
+  
+  .app-title {
+    font-size: var(--font-size-3xl);
+  }
+  
+  .app-main {
+    padding: var(--space-lg);
+  }
+}
+
+/* Landscape orientation adjustments for iPhones */
+@media (max-height: 480px) and (orientation: landscape) {
+  .app-header {
+    padding: var(--space-xs) var(--space-md);
+  }
+  
+  .app-title {
+    font-size: var(--font-size-lg);
+  }
+  
+  .welcome-message {
+    padding: var(--space-lg) var(--space-md);
+  }
+  
+  .welcome-message h2 {
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--space-sm);
+  }
+  
+  .search-input {
+    height: 2.5rem; /* Smaller height in landscape */
   }
 }
 

@@ -635,20 +635,87 @@
    Mobile-Specific Enhancements
    =================================== */
 
-/* Touch Targets */
-@media (max-width: 768px) {
+/* ===================================
+   iPhone-Specific Component Adjustments
+   =================================== */
+
+/* iPhone SE (320px) - Compact layout */
+@media (max-width: 320px) {
   .search-input {
     font-size: 16px; /* Prevents zoom on iOS */
-    min-height: 48px; /* Ensure minimum touch target size */
+    min-height: 44px;
+    padding: var(--space-sm) var(--space-md);
+    padding-right: 2.75rem;
+  }
+  
+  .clear-search {
+    width: 2rem;
+    height: 2rem;
+    right: var(--space-xs);
+  }
+  
+  .language-toggle {
+    min-width: 2.5rem;
+    min-height: 40px;
+    padding: var(--space-xs) var(--space-sm);
+    font-size: var(--font-size-xs);
+  }
+  
+  .result-card {
+    padding: var(--space-sm) var(--space-md);
+  }
+  
+  .result-spanish {
+    font-size: var(--font-size-lg);
+  }
+  
+  .result-english {
+    font-size: var(--font-size-base);
+  }
+  
+  .dietary-tag {
+    padding: 0.25rem var(--space-xs);
+    font-size: 0.625rem; /* 10px */
+  }
+}
+
+/* iPhone 12 mini, SE 3rd gen (375px) */
+@media (min-width: 321px) and (max-width: 375px) {
+  .search-input {
+    font-size: 16px;
+    min-height: 46px;
+    padding: var(--space-sm) var(--space-md);
+    padding-right: 3rem;
+  }
+  
+  .clear-search {
+    width: 2.25rem;
+    height: 2.25rem;
+    min-height: 44px;
+    right: var(--space-xs);
+  }
+  
+  .language-toggle {
+    min-width: 2.75rem;
+    min-height: 42px;
+    padding: var(--space-xs) var(--space-sm);
+  }
+}
+
+/* iPhone 12/13/14 standard (390px) and Pro (393px) */
+@media (min-width: 376px) and (max-width: 393px) {
+  .search-input {
+    font-size: 16px;
+    min-height: 48px;
     padding: var(--space-md);
-    padding-right: 3rem; /* More space for clear button on mobile */
+    padding-right: 3rem;
   }
   
   .clear-search {
     width: 2.5rem;
     height: 2.5rem;
-    min-height: 44px; /* iOS minimum touch target */
-    right: var(--space-xs);
+    min-height: 44px;
+    right: var(--space-sm);
   }
   
   .language-toggle {
@@ -656,7 +723,51 @@
     min-height: 44px;
     padding: var(--space-sm) var(--space-md);
   }
+}
+
+/* iPhone Plus models (414px) and Pro Max (428px+) */
+@media (min-width: 414px) and (max-width: 768px) {
+  .search-input {
+    font-size: 17px; /* Larger text for bigger screens */
+    min-height: 50px;
+    padding: var(--space-md) var(--space-lg);
+    padding-right: 3.5rem;
+  }
   
+  .clear-search {
+    width: 2.75rem;
+    height: 2.75rem;
+    min-height: 48px;
+    right: var(--space-sm);
+  }
+  
+  .language-toggle {
+    min-width: 3.5rem;
+    min-height: 48px;
+    padding: var(--space-sm) var(--space-lg);
+    font-size: var(--font-size-sm);
+  }
+  
+  .result-card {
+    padding: var(--space-lg) var(--space-xl);
+  }
+  
+  .result-spanish {
+    font-size: var(--font-size-2xl);
+  }
+  
+  .result-english {
+    font-size: var(--font-size-xl);
+  }
+  
+  .dietary-tag {
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* Universal mobile improvements */
+@media (max-width: 768px) {
   .suggestion-item {
     padding: var(--space-md);
     min-height: 48px; /* Larger touch targets for suggestions */
@@ -667,6 +778,46 @@
   /* Improve spacing on mobile */
   .search-section {
     padding: 0 var(--space-sm);
+  }
+  
+  /* Better visual hierarchy on mobile */
+  .welcome-message h2 {
+    font-size: clamp(var(--font-size-xl), 5vw, var(--font-size-2xl));
+  }
+  
+  .welcome-message p {
+    font-size: clamp(var(--font-size-base), 4vw, var(--font-size-lg));
+  }
+}
+
+/* Landscape orientation for iPhones */
+@media (max-width: 768px) and (orientation: landscape) and (max-height: 480px) {
+  .search-input {
+    min-height: 40px; /* Reduced height in landscape */
+    padding: var(--space-sm) var(--space-md);
+  }
+  
+  .clear-search {
+    width: 2rem;
+    height: 2rem;
+  }
+  
+  .language-toggle {
+    min-height: 36px;
+    padding: var(--space-xs) var(--space-sm);
+  }
+  
+  .result-card {
+    padding: var(--space-md);
+  }
+  
+  .welcome-message {
+    padding: var(--space-md);
+  }
+  
+  .welcome-message h2 {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-xs);
   }
 }
 
