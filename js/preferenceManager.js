@@ -73,7 +73,15 @@ export class PreferenceManager {
             if (error.name === 'QuotaExceededError') {
                 console.warn('[PreferenceManager] Storage quota exceeded, performing cleanup');
                 this.cleanupOldPreferences();
-                this.savePreferences(); // Retry after cleanup
+                // Only retry once to avoid infinite recursion
+                try {
+                    const retryData = Object.fromEntries(this.preferences);
+                    const retryJsonString = JSON.stringify(retryData);
+                    localStorage.setItem(this.storageKey, retryJsonString);
+                    console.log(`[PreferenceManager] Retry successful: saved ${this.preferences.size} preferences`);
+                } catch (retryError) {
+                    console.error('[PreferenceManager] Failed to save even after cleanup:', retryError);
+                }
             } else {
                 console.error('[PreferenceManager] Error saving preferences:', error);
             }
