@@ -2,8 +2,8 @@
   "name": "Spanish Menu Cheater",
   "short_name": "Menu Cheater",
   "description": "Quickly translate Spanish menu items with dietary information",
-  "start_url": "/",
-  "scope": "/",
+  "start_url": "/SpanishMenuCheater/",
+  "scope": "/SpanishMenuCheater/",
   "display": "standalone",
   "orientation": "portrait",
   "theme_color": "#D2691E",
@@ -45,7 +45,7 @@
       "name": "Search Menu",
       "short_name": "Search",
       "description": "Quickly search Spanish menu items",
-      "url": "/?utm_source=homescreen",
+      "url": "/SpanishMenuCheater/?utm_source=homescreen",
       "icons": [
         {
           "src": "icons/favicon-32x32.png",

@@ -6,19 +6,20 @@ const DATA_CACHE_NAME = 'spanish-menu-data-v1.0.0';
 
 // Define all resources needed for offline functionality
 const APP_SHELL_FILES = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/styles/main.css',
-  '/styles/components.css',
-  '/js/main.js',
-  '/js/dataManager.js',
-  '/js/searchEngine.js'
+  '/SpanishMenuCheater/',
+  '/SpanishMenuCheater/index.html',
+  '/SpanishMenuCheater/manifest.json',
+  '/SpanishMenuCheater/styles/main.css',
+  '/SpanishMenuCheater/styles/components.css',
+  '/SpanishMenuCheater/js/main.js',
+  '/SpanishMenuCheater/js/dataManager.js',
+  '/SpanishMenuCheater/js/searchEngine.js',
+  '/SpanishMenuCheater/js/updateManager.js'
 ];
 
 // Critical data files for offline search functionality
 const DATA_FILES = [
-  '/data/spanish_menu_items.csv'
+  '/SpanishMenuCheater/data/spanish_menu_items.csv'
 ];
 
 // External resources with fallback handling
@@ -151,7 +152,7 @@ self.addEventListener('fetch', event => {
         }).catch(() => {
           // For HTML requests, serve the main page
           if (request.headers.get('accept').includes('text/html')) {
-            return caches.match('/index.html');
+            return caches.match('/SpanishMenuCheater/index.html');
           }
           
           console.error('[SW] Failed to fetch app shell resource:', request.url);
@@ -215,7 +216,7 @@ self.addEventListener('fetch', event => {
         
         // If HTML request and not cached, serve main page
         if (request.headers.get('accept').includes('text/html')) {
-          return caches.match('/index.html');
+          return caches.match('/SpanishMenuCheater/index.html');
         }
         
         // For other resources, return service unavailable
@@ -267,9 +268,9 @@ self.addEventListener('message', event => {
   if (event.data && event.data.type === 'CHECK_OFFLINE_READY') {
     // Check if all critical resources are cached
     Promise.all([
-      caches.match('/index.html'),
-      caches.match('/data/spanish_menu_items.csv'),
-      caches.match('/js/main.js')
+      caches.match('/SpanishMenuCheater/index.html'),
+      caches.match('/SpanishMenuCheater/data/spanish_menu_items.csv'),
+      caches.match('/SpanishMenuCheater/js/main.js')
     ]).then(responses => {
       const isOfflineReady = responses.every(response => response !== undefined);
       
