@@ -1,9 +1,9 @@
 ## Relevant Files
 
-- `index.html` - Main HTML file with app structure and semantic elements
+- `index.html` - Main HTML file with app structure, semantic elements, and mobile-optimized search input
 - `styles/main.css` - Primary stylesheet with mobile-first design and Spanish theming
-- `styles/components.css` - Component-specific styles for search, results, and UI elements
-- `js/main.js` - Main application entry point and initialization with search integration
+- `styles/components.css` - Component-specific styles with mobile touch targets and keyboard support
+- `js/main.js` - Main application entry point with mobile keyboard navigation and device detection
 - `js/main.test.js` - Unit tests for `main.js`
 - `js/dataManager.js` - CSV parsing and data management functionality (COMPLETED)
 - `js/dataManager.test.js` - Unit tests for `dataManager.js` (COMPLETED)
@@ -45,7 +45,7 @@
 
 - [ ] 4.0 User Interface and Mobile Experience
   - [x] 4.1 Design and implement mobile-optimized search input with proper keyboard support
-  - [ ] 4.2 Create search results display with proper formatting for dietary info
+  - [x] 4.2 Create search results display with proper formatting for dietary info
   - [ ] 4.3 Build language toggle button with English/Dutch switching
   - [ ] 4.4 Implement dietary warning display (pork/dairy alerts) with visual emphasis
   - [ ] 4.5 Add responsive design for various iPhone screen sizes
