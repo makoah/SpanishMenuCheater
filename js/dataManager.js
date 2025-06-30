@@ -15,7 +15,9 @@ export class DataManager {
         this.requiredFields = [
             'Spanish Name',
             'English Translation',
+            'Dutch Translation',
             'Description',
+            'Dutch Description',
             'Price Range',
             'Pork',
             'Other Meat',
@@ -237,7 +239,9 @@ export class DataManager {
             // Core information
             spanishName: this.cleanString(item['Spanish Name']),
             englishName: this.cleanString(item['English Translation']),
+            dutchName: this.cleanString(item['Dutch Translation'] || item['English Translation']), // Fallback to English if Dutch missing
             description: this.cleanString(item['Description'] || ''),
+            dutchDescription: this.cleanString(item['Dutch Description'] || item['Description'] || ''), // Fallback to English description
             priceRange: this.cleanString(item['Price Range'] || ''),
             
             // Dietary information (convert to boolean)

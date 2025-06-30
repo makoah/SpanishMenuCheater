@@ -1,22 +1,22 @@
-Spanish Name,English Translation,Description,Price Range,Pork,Other Meat,Fish/Seafood,Dairy,Vegetarian,Google Search
-Aceitunas,Olives,Marinated olives served as appetizer,€3-5,FALSE,FALSE,FALSE,FALSE,TRUE,https://www.google.com/search?q=spanish%20aceitunas&tbm=isch
-Agua de Valencia,Valencia Water,"Cocktail with cava, orange juice, vodka and gin",€6-8,FALSE,FALSE,FALSE,TRUE,FALSE,https://www.google.com/search?q=agua%20de%20valencia%20cocktail&tbm=isch
-Aguacate,Avocado,Fresh avocado slices or guacamole,€4-6,FALSE,FALSE,FALSE,FALSE,TRUE,https://www.google.com/search?q=aguacate%20spanish&tbm=isch
-Ajoblanco,White Garlic Soup,"Cold soup with bread, almonds, garlic, olive oil and sometimes grapes",€4-6,FALSE,FALSE,FALSE,TRUE,TRUE,https://www.google.com/search?q=ajoblanco%20soup&tbm=isch
-Ajo Blanco,White Gazpacho,Cold almond soup from Andalusia,€5-7,FALSE,FALSE,FALSE,TRUE,TRUE,https://www.google.com/search?q=ajo%20blanco&tbm=isch
-Albóndigas,Meatballs,Meatballs typically made with beef and pork in tomato sauce,€8-10,TRUE,TRUE,FALSE,FALSE,FALSE,https://www.google.com/search?q=albondigas%20spanish&tbm=isch
-Alioli,Garlic Mayonnaise,Garlic sauce with olive oil and sometimes egg,€2-3,FALSE,FALSE,FALSE,TRUE,TRUE,https://www.google.com/search?q=alioli%20sauce&tbm=isch
-Almejas,Clams,Steamed clams in white wine sauce,€9-13,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=almejas%20spanish&tbm=isch
-Anchoas,Anchovies,Cured anchovy fillets in olive oil,€6-8,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=anchoas%20spanish&tbm=isch
-Angulas,Baby Eels,"Expensive delicacy, usually sautéed with garlic",€20-35,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=angulas%20spanish&tbm=isch
-Arroz con Leche,Rice Pudding,"Sweet dessert with rice, milk, cinnamon and lemon",€4-5,FALSE,FALSE,FALSE,TRUE,TRUE,https://www.google.com/search?q=arroz%20con%20leche&tbm=isch
-Arroz con Pollo,Chicken Rice,Rice dish with chicken and vegetables,€10-13,FALSE,TRUE,FALSE,FALSE,FALSE,https://www.google.com/search?q=arroz%20con%20pollo&tbm=isch
-Arroz Negro,Black Rice,"Rice cooked with squid ink, seafood, and vegetables",€12-15,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=arroz%20negro&tbm=isch
-Asado de Cordero,Roast Lamb,Slow-roasted lamb with herbs,€16-22,FALSE,TRUE,FALSE,FALSE,FALSE,https://www.google.com/search?q=asado%20cordero&tbm=isch
-Atún,Tuna,"Tuna served in various ways, often as tapas",€8-12,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=atun%20spanish%20tapa&tbm=isch
-Bacalao,Codfish,Salted codfish prepared in various ways,€10-14,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=bacalao%20spanish&tbm=isch
-Berenjenas con Miel,Eggplant with Honey,Fried eggplant slices drizzled with honey,€6-8,FALSE,FALSE,FALSE,FALSE,TRUE,https://www.google.com/search?q=berenjenas%20con%20miel&tbm=isch
-Besugo,Sea Bream,Grilled or baked sea bream,€12-16,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=besugo%20pescado&tbm=isch
+Spanish Name,English Translation,Dutch Translation,Description,Dutch Description,Price Range,Pork,Other Meat,Fish/Seafood,Dairy,Vegetarian,Google Search
+Aceitunas,Olives,Olijven,Marinated olives served as appetizer,Gemarineerde olijven geserveerd als voorgerecht,€3-5,FALSE,FALSE,FALSE,FALSE,TRUE,https://www.google.com/search?q=spanish%20aceitunas&tbm=isch
+Agua de Valencia,Valencia Water,Valencia Water,"Cocktail with cava, orange juice, vodka and gin","Cocktail gemaakt met cava, sinaasappelsap, wodka en gin",€6-8,FALSE,FALSE,FALSE,TRUE,FALSE,https://www.google.com/search?q=agua%20de%20valencia%20cocktail&tbm=isch
+Aguacate,Avocado,Avocado,Fresh avocado slices or guacamole,Verse avocadoplakjes of guacamole dip,€4-6,FALSE,FALSE,FALSE,FALSE,TRUE,https://www.google.com/search?q=aguacate%20spanish&tbm=isch
+Ajoblanco,White Garlic Soup,Witte Knoflooksoep,"Cold soup with bread, almonds, garlic, olive oil and sometimes grapes","Koude soep met brood, amandelen, knoflook, olijfolie en soms druiven",€4-6,FALSE,FALSE,FALSE,TRUE,TRUE,https://www.google.com/search?q=ajoblanco%20soup&tbm=isch
+Ajo Blanco,White Gazpacho,Witte Gazpacho,Cold almond soup from Andalusia,Koude amandelsoep uit Andalusië,€5-7,FALSE,FALSE,FALSE,TRUE,TRUE,https://www.google.com/search?q=ajo%20blanco&tbm=isch
+Albóndigas,Meatballs,Gehaktballen,Meatballs typically made with beef and pork in tomato sauce,Gehaktballen meestal van rund- en varkensvlees in tomatensaus,€8-10,TRUE,TRUE,FALSE,FALSE,FALSE,https://www.google.com/search?q=albondigas%20spanish&tbm=isch
+Alioli,Garlic Mayonnaise,Knoflookmayonaise,Garlic sauce with olive oil and sometimes egg,Knoflooksaus met olijfolie en soms ei,€2-3,FALSE,FALSE,FALSE,TRUE,TRUE,https://www.google.com/search?q=alioli%20sauce&tbm=isch
+Almejas,Clams,Venusschelpen,Steamed clams in white wine sauce,Gestoomde venusschelpen in witte wijnsaus,€9-13,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=almejas%20spanish&tbm=isch
+Anchoas,Anchovies,Ansjovis,Cured anchovy fillets in olive oil,Gezouten ansjovisfilets in olijfolie,€6-8,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=anchoas%20spanish&tbm=isch
+Angulas,Baby Eels,Glasaaltjes,"Expensive delicacy, usually sautéed with garlic","Dure delicatesse, meestal gebakken met knoflook",€20-35,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=angulas%20spanish&tbm=isch
+Arroz con Leche,Rice Pudding,Rijstpudding,"Sweet dessert with rice, milk, cinnamon and lemon","Zoet dessert met rijst, melk, kaneel en citroen",€4-5,FALSE,FALSE,FALSE,TRUE,TRUE,https://www.google.com/search?q=arroz%20con%20leche&tbm=isch
+Arroz con Pollo,Chicken Rice,Kippenrijst,Rice dish with chicken and vegetables,Rijstgerecht met kip en groenten,€10-13,FALSE,TRUE,FALSE,FALSE,FALSE,https://www.google.com/search?q=arroz%20con%20pollo&tbm=isch
+Arroz Negro,Black Rice,Zwarte Rijst,"Rice cooked with squid ink, seafood, and vegetables","Rijst gekookt met inktvisinkt, zeevruchten en groenten",€12-15,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=arroz%20negro&tbm=isch
+Asado de Cordero,Roast Lamb,Geroosterd Lamsvlees,Slow-roasted lamb with herbs,Langzaam geroosterd lamsvlees met kruiden,€16-22,FALSE,TRUE,FALSE,FALSE,FALSE,https://www.google.com/search?q=asado%20cordero&tbm=isch
+Atún,Tuna,Tonijn,"Tuna served in various ways, often as tapas","Tonijn geserveerd op verschillende manieren, vaak als tapas",€8-12,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=atun%20spanish%20tapa&tbm=isch
+Bacalao,Codfish,Kabeljauw,Salted codfish prepared in various ways,Gezouten kabeljauw bereid op verschillende manieren,€10-14,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=bacalao%20spanish&tbm=isch
+Berenjenas con Miel,Eggplant with Honey,Aubergine met Honing,Fried eggplant slices drizzled with honey,Gebakken aubergineplakken met honing gedruppeld,€6-8,FALSE,FALSE,FALSE,FALSE,TRUE,https://www.google.com/search?q=berenjenas%20con%20miel&tbm=isch
+Besugo,Sea Bream,Zeebrasem,Grilled or baked sea bream,Gegrilde of gebakken zeebrasem,€12-16,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=besugo%20pescado&tbm=isch
 Bistec,Steak,Grilled beef steak,€14-20,FALSE,TRUE,FALSE,FALSE,FALSE,https://www.google.com/search?q=bistec%20spanish&tbm=isch
 Bocadillo,Sandwich,Baguette sandwich with various fillings,€3-6,FALSE,FALSE,FALSE,FALSE,FALSE,https://www.google.com/search?q=bocadillo%20spanish&tbm=isch
 Bonito,Bonito Tuna,"Fresh bonito tuna, grilled or canned",€10-14,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=bonito%20del%20norte&tbm=isch
@@ -127,9 +127,9 @@ Oreja a la Plancha,Grilled Pig Ear,"Grilled pig ear, traditional tapa",€6-8,TR
 Ostras,Oysters,Fresh oysters served raw or grilled,€15-25,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=ostras&tbm=isch
 Oxtail,Rabo de Toro,Slow-braised oxtail in red wine,€14-18,FALSE,TRUE,FALSE,FALSE,FALSE,https://www.google.com/search?q=rabo%20toro&tbm=isch
 Pad Thai,Pad Thai,Thai stir-fried noodles,€9-12,FALSE,FALSE,FALSE,FALSE,TRUE,https://www.google.com/search?q=pad%20thai&tbm=isch
-Paella de Mariscos,Seafood Paella,Rice with mixed seafood and saffron,€16-22,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=paella%20mariscos&tbm=isch
-Paella Mixta,Mixed Paella,"Rice with chicken, seafood, and vegetables",€16-20,FALSE,TRUE,TRUE,FALSE,FALSE,https://www.google.com/search?q=paella%20mixta&tbm=isch
-Paella Valenciana,Valencian Paella,"Traditional rice dish with chicken, rabbit, and beans",€15-20,FALSE,TRUE,FALSE,FALSE,FALSE,https://www.google.com/search?q=paella%20valenciana&tbm=isch
+Paella de Mariscos,Seafood Paella,Zeevruchten Paella,Rice with mixed seafood and saffron,Rijstgerecht met gemengde zeevruchten en saffraan,€16-22,FALSE,FALSE,TRUE,FALSE,FALSE,https://www.google.com/search?q=paella%20mariscos&tbm=isch
+Paella Mixta,Mixed Paella,Gemengde Paella,"Rice with chicken, seafood, and vegetables","Rijstgerecht met kip, zeevruchten en groenten",€16-20,FALSE,TRUE,TRUE,FALSE,FALSE,https://www.google.com/search?q=paella%20mixta&tbm=isch
+Paella Valenciana,Valencian Paella,Valenciaanse Paella,"Traditional rice dish with chicken, rabbit, and beans","Traditioneel rijstgerecht met kip, konijn en bonen",€15-20,FALSE,TRUE,FALSE,FALSE,FALSE,https://www.google.com/search?q=paella%20valenciana&tbm=isch
 Pan con Tomate,Bread with Tomato,Toasted bread rubbed with tomato and olive oil,€3-5,FALSE,FALSE,FALSE,FALSE,TRUE,https://www.google.com/search?q=pan%20con%20tomate&tbm=isch
 Pasta Bolognesa,Bolognese Pasta,Pasta with meat sauce,€9-12,FALSE,TRUE,FALSE,TRUE,FALSE,https://www.google.com/search?q=pasta%20bolognesa&tbm=isch
 Patatas Alioli,Potatoes with Alioli,Boiled potatoes served with garlic mayonnaise,€5-7,FALSE,FALSE,FALSE,TRUE,TRUE,https://www.google.com/search?q=patatas%20alioli&tbm=isch

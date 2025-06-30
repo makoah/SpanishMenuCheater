@@ -423,7 +423,18 @@ class SpanishMenuCheater {
         
         console.log(`🌐 Language switched to: ${this.currentLanguage}`);
         
-        // TODO: Update all translations when LanguageManager is implemented
+        // Refresh current search results to show in new language
+        if (this.state.hasResults && this.state.searchResults.length > 0) {
+            this.displaySearchResults(this.state.searchResults);
+        }
+        
+        // Update search placeholder text
+        if (this.elements.searchInput) {
+            const placeholder = this.currentLanguage === 'nl' 
+                ? 'Typ een Spaans gerecht...' 
+                : 'Type a Spanish menu item...';
+            this.elements.searchInput.placeholder = placeholder;
+        }
     }
     
     /**
@@ -566,31 +577,41 @@ class SpanishMenuCheater {
         const warningTags = [];
         const infoTags = [];
         
+        // Get dietary tag text based on current language
+        const getDietaryText = (englishText, dutchText) => {
+            return this.currentLanguage === 'nl' ? dutchText : englishText;
+        };
+        
         // Priority 1: Warning tags (pork/dairy alerts)
-        if (item.hasPork) warningTags.push('<span class="dietary-tag pork">Contains Pork</span>');
-        if (item.hasDairy) warningTags.push('<span class="dietary-tag dairy">Contains Dairy</span>');
+        if (item.hasPork) warningTags.push(`<span class="dietary-tag pork">${getDietaryText('Contains Pork', 'Bevat Varkensvlees')}</span>`);
+        if (item.hasDairy) warningTags.push(`<span class="dietary-tag dairy">${getDietaryText('Contains Dairy', 'Bevat Zuivel')}</span>`);
         
         // Priority 2: Other dietary information
-        if (item.isVegetarian) infoTags.push('<span class="dietary-tag vegetarian">Vegetarian</span>');
-        if (item.hasOtherMeat) infoTags.push('<span class="dietary-tag meat">Contains Meat</span>');
-        if (item.hasSeafood) infoTags.push('<span class="dietary-tag seafood">Contains Seafood</span>');
+        if (item.isVegetarian) infoTags.push(`<span class="dietary-tag vegetarian">${getDietaryText('Vegetarian', 'Vegetarisch')}</span>`);
+        if (item.hasOtherMeat) infoTags.push(`<span class="dietary-tag meat">${getDietaryText('Contains Meat', 'Bevat Vlees')}</span>`);
+        if (item.hasSeafood) infoTags.push(`<span class="dietary-tag seafood">${getDietaryText('Contains Seafood', 'Bevat Zeevruchten')}</span>`);
         
         // Combine with warnings first for visual prominence
         const dietaryTags = [...warningTags, ...infoTags];
+        
+        // Use appropriate language based on current setting
+        const translationName = this.currentLanguage === 'nl' ? item.dutchName : item.englishName;
+        const translationDescription = this.currentLanguage === 'nl' ? item.dutchDescription : item.description;
+        const visualExampleText = this.currentLanguage === 'nl' ? 'Bekijk Voorbeelden' : 'See Visual Examples';
         
         card.innerHTML = `
             <div class="result-header">
                 <h3 class="result-spanish">${this.escapeHtml(item.spanishName)}</h3>
                 ${item.priceRange ? `<span class="result-price">${this.escapeHtml(item.priceRange)}</span>` : ''}
             </div>
-            <h4 class="result-english">${this.escapeHtml(item.englishName)}</h4>
-            ${item.description ? `<p class="result-description">${this.escapeHtml(item.description)}</p>` : ''}
+            <h4 class="result-english">${this.escapeHtml(translationName)}</h4>
+            ${translationDescription ? `<p class="result-description">${this.escapeHtml(translationDescription)}</p>` : ''}
             ${dietaryTags.length > 0 ? `<div class="dietary-info">${dietaryTags.join('')}</div>` : ''}
             ${item.googleSearchUrl ? `
                 <div class="result-actions">
                     <a href="${this.escapeHtml(item.googleSearchUrl)}" target="_blank" rel="noopener noreferrer" class="visual-example-link">
                         <span class="link-icon">🖼️</span>
-                        See Visual Examples
+                        ${visualExampleText}
                     </a>
                 </div>
             ` : ''}
