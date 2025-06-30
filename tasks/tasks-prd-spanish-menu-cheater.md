@@ -12,7 +12,9 @@
 - `test/setup.js` - Jest test setup with DOM mocking and browser API mocks
 - `data/spanish_menu_items.csv` - Menu data with 200+ Spanish items
 - `package.json` - Project configuration with Jest testing setup
-- `package-lock.json` - Dependency lock file
+- `package-lock.json` - Dependency lock file  
+- `manifest.json` - PWA manifest with app metadata and installation configuration (COMPLETED)
+- `sw.js` - Service worker for offline functionality and PWA caching strategies (COMPLETED)
 
 ### Notes
 
@@ -54,8 +56,8 @@
   - [x] 4.8 Add Dutch translations to CSV data (nlTranslation, nlDescription) and implement language toggle functionality
 
 - [ ] 5.0 PWA Features and Offline Capability
-  - [ ] 5.1 Create web app manifest.json with proper PWA configuration
-  - [ ] 5.2 Design and implement service worker for offline functionality
+  - [x] 5.1 Create web app manifest.json with proper PWA configuration
+  - [x] 5.2 Design and implement service worker for offline functionality
   - [ ] 5.3 Set up caching strategies for app shell and data
   - [ ] 5.4 Add offline indicator and graceful degradation messaging
   - [ ] 5.5 Create PWA icons in required sizes (192x192, 512x512, etc.)
