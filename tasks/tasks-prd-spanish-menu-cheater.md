@@ -50,7 +50,8 @@
   - [x] 4.4 Implement dietary warning display (pork/dairy alerts) with visual emphasis
   - [x] 4.5 Add responsive design for various iPhone screen sizes
   - [x] 4.6 Create Spanish-themed visual styling with appropriate colors and typography
-  - [ ] 4.7 Implement proper touch targets and one-handed operation support
+  - [x] 4.7 Implement proper touch targets and one-handed operation support
+  - [ ] 4.8 Add Dutch translations to CSV data (nlTranslation, nlDescription) and implement language toggle functionality
 
 - [ ] 5.0 PWA Features and Offline Capability
   - [ ] 5.1 Create web app manifest.json with proper PWA configuration
@@ -64,7 +65,7 @@
 ## Future Enhancements (Later Versions)
 
 - [ ] 6.0 Enhanced Language Support
-  - [ ] 6.1 Add comprehensive Dutch translations for all menu items (requires sourcing Dutch food translations)
-  - [ ] 6.2 Implement full UI translation system with language persistence
-  - [ ] 6.3 Add German language support for additional European market
-  - [ ] 6.4 Consider integration with translation APIs for dynamic language support
+  - [ ] 6.1 Implement full UI translation system with language persistence (if needed beyond menu content)
+  - [ ] 6.2 Add German language support for additional European market
+  - [ ] 6.3 Consider integration with translation APIs for dynamic language support
+  - [ ] 6.4 Add additional European languages (French, Italian) for broader market appeal
