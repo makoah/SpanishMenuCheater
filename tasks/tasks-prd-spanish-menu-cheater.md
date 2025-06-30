@@ -47,7 +47,7 @@
   - [x] 4.1 Design and implement mobile-optimized search input with proper keyboard support
   - [x] 4.2 Create search results display with proper formatting for dietary info
   - [x] 4.3 Build language toggle button with English/Dutch switching (Basic UI toggle - comprehensive Dutch translations marked for future versions)
-  - [ ] 4.4 Implement dietary warning display (pork/dairy alerts) with visual emphasis
+  - [x] 4.4 Implement dietary warning display (pork/dairy alerts) with visual emphasis
   - [ ] 4.5 Add responsive design for various iPhone screen sizes
   - [ ] 4.6 Create Spanish-themed visual styling with appropriate colors and typography
   - [ ] 4.7 Implement proper touch targets and one-handed operation support

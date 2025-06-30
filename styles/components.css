@@ -351,16 +351,37 @@
   border: 1px solid rgba(34, 139, 34, 0.3);
 }
 
+/* High Visual Emphasis Warning Tags */
 .dietary-tag.pork {
-  background: rgba(220, 20, 60, 0.1);
+  background: rgba(220, 20, 60, 0.15);
   color: var(--color-error);
-  border: 1px solid rgba(220, 20, 60, 0.3);
+  border: 2px solid rgba(220, 20, 60, 0.5);
+  font-weight: var(--font-weight-bold);
+  box-shadow: 0 2px 4px rgba(220, 20, 60, 0.2);
+  position: relative;
+  animation: subtle-pulse 3s ease-in-out infinite;
+}
+
+.dietary-tag.pork::before {
+  content: "⚠️";
+  margin-right: var(--space-xs);
+  font-size: var(--font-size-sm);
 }
 
 .dietary-tag.dairy {
-  background: rgba(255, 140, 0, 0.1);
+  background: rgba(255, 140, 0, 0.15);
   color: var(--color-warning);
-  border: 1px solid rgba(255, 140, 0, 0.3);
+  border: 2px solid rgba(255, 140, 0, 0.5);
+  font-weight: var(--font-weight-bold);
+  box-shadow: 0 2px 4px rgba(255, 140, 0, 0.2);
+  position: relative;
+  animation: subtle-pulse-orange 3s ease-in-out infinite 1.5s;
+}
+
+.dietary-tag.dairy::before {
+  content: "⚠️";
+  margin-right: var(--space-xs);
+  font-size: var(--font-size-sm);
 }
 
 .dietary-tag.meat {
@@ -460,6 +481,29 @@
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.7; }
+}
+
+/* Subtle pulse animation for dietary warnings */
+@keyframes subtle-pulse {
+  0%, 100% { 
+    box-shadow: 0 2px 4px rgba(220, 20, 60, 0.2);
+    transform: scale(1);
+  }
+  50% { 
+    box-shadow: 0 3px 6px rgba(220, 20, 60, 0.3);
+    transform: scale(1.02);
+  }
+}
+
+@keyframes subtle-pulse-orange {
+  0%, 100% { 
+    box-shadow: 0 2px 4px rgba(255, 140, 0, 0.2);
+    transform: scale(1);
+  }
+  50% { 
+    box-shadow: 0 3px 6px rgba(255, 140, 0, 0.3);
+    transform: scale(1.02);
+  }
 }
 
 /* ===================================
@@ -577,6 +621,13 @@
   
   .example-searches li:hover {
     transform: none;
+  }
+  
+  /* Disable dietary warning animations for reduced motion */
+  .dietary-tag.pork,
+  .dietary-tag.dairy {
+    animation: none;
+    transform: none !important;
   }
 }
 

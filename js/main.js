@@ -562,13 +562,21 @@ class SpanishMenuCheater {
         const card = document.createElement('div');
         card.className = 'result-card';
         
-        // Build dietary tags
-        const dietaryTags = [];
-        if (item.isVegetarian) dietaryTags.push('<span class="dietary-tag vegetarian">Vegetarian</span>');
-        if (item.hasPork) dietaryTags.push('<span class="dietary-tag pork">Contains Pork</span>');
-        if (item.hasDairy) dietaryTags.push('<span class="dietary-tag dairy">Contains Dairy</span>');
-        if (item.hasOtherMeat) dietaryTags.push('<span class="dietary-tag meat">Contains Meat</span>');
-        if (item.hasSeafood) dietaryTags.push('<span class="dietary-tag seafood">Contains Seafood</span>');
+        // Build dietary tags with warnings prioritized first
+        const warningTags = [];
+        const infoTags = [];
+        
+        // Priority 1: Warning tags (pork/dairy alerts)
+        if (item.hasPork) warningTags.push('<span class="dietary-tag pork">Contains Pork</span>');
+        if (item.hasDairy) warningTags.push('<span class="dietary-tag dairy">Contains Dairy</span>');
+        
+        // Priority 2: Other dietary information
+        if (item.isVegetarian) infoTags.push('<span class="dietary-tag vegetarian">Vegetarian</span>');
+        if (item.hasOtherMeat) infoTags.push('<span class="dietary-tag meat">Contains Meat</span>');
+        if (item.hasSeafood) infoTags.push('<span class="dietary-tag seafood">Contains Seafood</span>');
+        
+        // Combine with warnings first for visual prominence
+        const dietaryTags = [...warningTags, ...infoTags];
         
         card.innerHTML = `
             <div class="result-header">
