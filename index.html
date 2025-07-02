@@ -69,6 +69,19 @@
                     <!-- Dynamic suggestions will be populated here -->
                 </div>
             </div>
+            
+            <!-- Preference Filters -->
+            <div id="preference-filters" class="preference-filters hidden">
+                <button id="show-liked-filter" class="filter-btn" data-filter="showOnlyLiked" aria-label="Show only liked items">
+                    <span class="filter-icon">❤️</span>
+                    <span class="filter-label">Liked</span>
+                    <span class="filter-count">(0)</span>
+                </button>
+                <button id="hide-disliked-filter" class="filter-btn" data-filter="hideDislikes" aria-label="Hide disliked items">
+                    <span class="filter-icon">🚫</span>
+                    <span class="filter-label">Hide Disliked</span>
+                </button>
+            </div>
         </section>
 
         <!-- Results Section -->

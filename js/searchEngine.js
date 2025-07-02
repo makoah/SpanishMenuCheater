@@ -127,7 +127,7 @@ export class SearchEngine {
     /**
      * Main search function
      */
-    search(query, filters = {}) {
+    search(query, filters = {}, preferencesManager = null) {
         const startTime = performance.now();
         this.stats.totalSearches++;
         
@@ -163,7 +163,7 @@ export class SearchEngine {
         // Perform search
         const matches = this.findMatches(cleanQuery);
         const scoredResults = this.scoreAndRankResults(matches, cleanQuery);
-        const filteredResults = this.applyFilters(scoredResults, filters);
+        const filteredResults = this.applyFilters(scoredResults, filters, preferencesManager);
         const finalResults = filteredResults.slice(0, this.config.maxResults);
         
         // Generate suggestions
@@ -381,15 +381,28 @@ export class SearchEngine {
     }
     
     /**
-     * Apply dietary and other filters to results
+     * Apply dietary and preference filters to results
      */
-    applyFilters(results, filters) {
+    applyFilters(results, filters, preferencesManager = null) {
         if (!filters || Object.keys(filters).length === 0) {
             return results;
         }
         
         return results.filter(result => {
             const item = result.item;
+            
+            // Preference filters (using AND logic with other filters)
+            if (preferencesManager) {
+                // Show only liked items filter
+                if (filters.showOnlyLiked && !preferencesManager.isLiked(item.id)) {
+                    return false;
+                }
+                
+                // Hide disliked items filter
+                if (filters.hideDislikes && preferencesManager.isDisliked(item.id)) {
+                    return false;
+                }
+            }
             
             // Dietary filters
             if (filters.vegetarian && !item.isVegetarian) return false;

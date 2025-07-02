@@ -9,6 +9,7 @@
 import { DataManager } from './dataManager.js';
 import { SearchEngine } from './searchEngine.js';
 import { UpdateManager } from './updateManager.js';
+import { PreferencesManager } from './preferencesManager.js';
 // import { UIController } from './uiController.js';
 // import { LanguageManager } from './languageManager.js';
 // import { PWAManager } from './pwaManager.js';
@@ -27,6 +28,7 @@ class SpanishMenuCheater {
         this.dataManager = null;
         this.searchEngine = null;
         this.updateManager = null;
+        this.preferencesManager = null;
         this.uiController = null;
         this.languageManager = null;
         this.pwaManager = null;
@@ -51,7 +53,11 @@ class SpanishMenuCheater {
             hasResults: false,
             currentQuery: '',
             searchResults: [],
-            suggestions: []
+            suggestions: [],
+            preferences: {
+                showOnlyLiked: false,
+                hideDislikes: false
+            }
         };
         
         // Bind methods to preserve context
@@ -144,7 +150,10 @@ class SpanishMenuCheater {
             loadingIndicator: document.getElementById('loading-indicator'),
             noResults: document.getElementById('no-results'),
             resultsList: document.getElementById('results-list'),
-            suggestions: document.getElementById('suggestions')
+            suggestions: document.getElementById('suggestions'),
+            preferenceFilters: document.getElementById('preference-filters'),
+            showLikedFilter: document.getElementById('show-liked-filter'),
+            hideDislikedFilter: document.getElementById('hide-disliked-filter')
         };
         
         // Validate that all required elements exist
@@ -194,6 +203,9 @@ class SpanishMenuCheater {
         
         // Initialize UpdateManager
         this.updateManager = new UpdateManager();
+        
+        // Initialize PreferencesManager
+        this.preferencesManager = new PreferencesManager();
         
         // TODO: Initialize other modules when they are created
         // this.uiController = new UIController();
@@ -258,6 +270,17 @@ class SpanishMenuCheater {
         // Language toggle event listener
         if (this.elements.languageToggle) {
             this.elements.languageToggle.addEventListener('click', this.handleLanguageToggle.bind(this));
+        }
+        
+        // Preference button event listener (using event delegation)
+        document.addEventListener('click', this.handlePreferenceClick.bind(this));
+        
+        // Filter button event listeners
+        if (this.elements.showLikedFilter) {
+            this.elements.showLikedFilter.addEventListener('click', this.handleFilterClick.bind(this));
+        }
+        if (this.elements.hideDislikedFilter) {
+            this.elements.hideDislikedFilter.addEventListener('click', this.handleFilterClick.bind(this));
         }
         
         console.log('🎯 Event listeners set up successfully');
@@ -449,6 +472,215 @@ class SpanishMenuCheater {
     }
     
     /**
+     * Handle preference button clicks (like/dislike)
+     */
+    handlePreferenceClick(event) {
+        // Check if the clicked element is a preference button
+        const button = event.target.closest('.preference-btn');
+        if (!button) return;
+        
+        const itemId = button.getAttribute('data-item-id');
+        const action = button.getAttribute('data-action');
+        
+        if (!itemId || !action || !this.preferencesManager) return;
+        
+        // Get current preference
+        const currentPreference = this.preferencesManager.getPreference(itemId);
+        let newPreference;
+        
+        // Toggle logic: if clicking the same preference, set to neutral
+        if (action === 'like') {
+            newPreference = currentPreference === 'like' ? 'neutral' : 'like';
+        } else if (action === 'dislike') {
+            newPreference = currentPreference === 'dislike' ? 'neutral' : 'dislike';
+        }
+        
+        // Update preference
+        this.preferencesManager.setPreference(itemId, newPreference);
+        
+        // Update UI immediately - find the result card and update button states
+        const resultCard = button.closest('.result-card');
+        if (resultCard) {
+            this.updatePreferenceButtonsInCard(resultCard, itemId, newPreference);
+        }
+        
+        // Optional: Add visual feedback
+        this.showPreferenceFeedback(button, newPreference, action);
+        
+        // Update filter UI (counts, visibility)
+        this.updatePreferenceFilterUI();
+        
+        console.log(`🎯 Preference updated: ${itemId} -> ${newPreference}`);
+    }
+    
+    /**
+     * Update preference buttons in a specific result card
+     */
+    updatePreferenceButtonsInCard(card, itemId, preference) {
+        const likeBtn = card.querySelector('.like-btn');
+        const dislikeBtn = card.querySelector('.dislike-btn');
+        const likeIcon = likeBtn?.querySelector('.preference-icon');
+        const dislikeIcon = dislikeBtn?.querySelector('.preference-icon');
+        
+        if (!likeBtn || !dislikeBtn || !likeIcon || !dislikeIcon) return;
+        
+        // Reset classes
+        likeBtn.className = 'preference-btn like-btn';
+        dislikeBtn.className = 'preference-btn dislike-btn';
+        
+        // Set states based on preference
+        switch (preference) {
+            case 'like':
+                likeBtn.className += ' active';
+                likeIcon.textContent = '❤️';
+                dislikeIcon.textContent = '👎';
+                break;
+            case 'dislike':
+                dislikeBtn.className += ' active';
+                likeIcon.textContent = '🤍';
+                dislikeIcon.textContent = '👎';
+                break;
+            case 'neutral':
+            default:
+                likeIcon.textContent = '🤍';
+                dislikeIcon.textContent = '👎';
+                break;
+        }
+    }
+    
+    /**
+     * Show brief visual feedback when preference changes
+     */
+    showPreferenceFeedback(button, preference, action) {
+        // Add immediate visual feedback
+        button.classList.add('preference-feedback');
+        
+        // Add haptic feedback for mobile devices (if supported)
+        if ('vibrate' in navigator) {
+            navigator.vibrate(50); // Short vibration
+        }
+        
+        // Show temporary feedback toast
+        this.showPreferenceToast(preference, action);
+        
+        // Remove the animation class after completion
+        setTimeout(() => {
+            button.classList.remove('preference-feedback');
+        }, 300);
+    }
+    
+    /**
+     * Show brief toast message for preference changes
+     */
+    showPreferenceToast(preference, action) {
+        // Create or get existing toast element
+        let toast = document.getElementById('preference-toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'preference-toast';
+            toast.className = 'preference-toast';
+            document.body.appendChild(toast);
+        }
+        
+        // Set toast message based on preference
+        let message = '';
+        let icon = '';
+        switch (preference) {
+            case 'like':
+                message = 'Added to liked items';
+                icon = '❤️';
+                break;
+            case 'dislike':
+                message = 'Added to disliked items';
+                icon = '👎';
+                break;
+            case 'neutral':
+                message = action === 'like' ? 'Removed from liked' : 'Removed from disliked';
+                icon = '↩️';
+                break;
+        }
+        
+        toast.innerHTML = `<span class="toast-icon">${icon}</span><span class="toast-message">${message}</span>`;
+        
+        // Show toast with animation
+        toast.classList.remove('hidden');
+        toast.classList.add('show');
+        
+        // Hide toast after delay
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 300);
+        }, 1500);
+    }
+    
+    /**
+     * Handle filter button clicks
+     */
+    handleFilterClick(event) {
+        const button = event.target.closest('.filter-btn');
+        if (!button) return;
+        
+        const filterType = button.getAttribute('data-filter');
+        if (!filterType) return;
+        
+        // Toggle filter state
+        this.state.preferences[filterType] = !this.state.preferences[filterType];
+        
+        // Update button visual state
+        this.updateFilterButtonState(button, this.state.preferences[filterType]);
+        
+        // Update preference counts and show/hide filters
+        this.updatePreferenceFilterUI();
+        
+        // Re-run current search with new filters
+        if (this.state.currentQuery) {
+            this.performSearch(this.state.currentQuery);
+        }
+        
+        console.log(`🔍 Filter toggled: ${filterType} = ${this.state.preferences[filterType]}`);
+    }
+    
+    /**
+     * Update filter button visual state
+     */
+    updateFilterButtonState(button, isActive) {
+        if (isActive) {
+            button.classList.add('active');
+        } else {
+            button.classList.remove('active');
+        }
+    }
+    
+    /**
+     * Update preference filter UI (counts, visibility)
+     */
+    updatePreferenceFilterUI() {
+        if (!this.preferencesManager || !this.elements.preferenceFilters) return;
+        
+        const counts = this.preferencesManager.getPreferenceCounts();
+        
+        // Update liked count in the button
+        const likedCountElement = this.elements.showLikedFilter?.querySelector('.filter-count');
+        if (likedCountElement) {
+            likedCountElement.textContent = `(${counts.liked})`;
+        }
+        
+        // Show/hide filter controls based on whether user has any preferences
+        if (counts.total > 0) {
+            this.elements.preferenceFilters.classList.remove('hidden');
+        } else {
+            this.elements.preferenceFilters.classList.add('hidden');
+            // Reset filter states when no preferences exist
+            this.state.preferences.showOnlyLiked = false;
+            this.state.preferences.hideDislikes = false;
+            this.updateFilterButtonState(this.elements.showLikedFilter, false);
+            this.updateFilterButtonState(this.elements.hideDislikedFilter, false);
+        }
+    }
+    
+    /**
      * Perform search using SearchEngine
      */
     performSearch(query) {
@@ -465,8 +697,9 @@ class SpanishMenuCheater {
                     throw new Error('Search not ready - data not loaded');
                 }
                 
-                // Perform search
-                const searchResult = this.searchEngine.search(query);
+                // Perform search with preference filters
+                const filters = { ...this.state.preferences };
+                const searchResult = this.searchEngine.search(query, filters, this.preferencesManager);
                 
                 this.hideLoadingState();
                 
@@ -610,6 +843,15 @@ class SpanishMenuCheater {
         const translationDescription = this.currentLanguage === 'nl' ? item.dutchDescription : item.description;
         const visualExampleText = this.currentLanguage === 'nl' ? 'Bekijk Voorbeelden' : 'See Visual Examples';
         
+        // Get current preference state
+        const currentPreference = this.preferencesManager ? this.preferencesManager.getPreference(item.id) : 'neutral';
+        
+        // Preference button states
+        const likeButtonClass = currentPreference === 'like' ? 'preference-btn like-btn active' : 'preference-btn like-btn';
+        const dislikeButtonClass = currentPreference === 'dislike' ? 'preference-btn dislike-btn active' : 'preference-btn dislike-btn';
+        const likeIcon = currentPreference === 'like' ? '❤️' : '🤍';
+        const dislikeIcon = currentPreference === 'dislike' ? '👎' : '👎';
+        
         card.innerHTML = `
             <div class="result-header">
                 <h3 class="result-spanish">${this.escapeHtml(item.spanishName)}</h3>
@@ -618,14 +860,22 @@ class SpanishMenuCheater {
             <h4 class="result-english">${this.escapeHtml(translationName)}</h4>
             ${translationDescription ? `<p class="result-description">${this.escapeHtml(translationDescription)}</p>` : ''}
             ${dietaryTags.length > 0 ? `<div class="dietary-info">${dietaryTags.join('')}</div>` : ''}
-            ${item.googleSearchUrl ? `
-                <div class="result-actions">
+            <div class="result-actions">
+                <div class="preference-controls">
+                    <button class="${likeButtonClass}" data-item-id="${this.escapeHtml(item.id)}" data-action="like" aria-label="Like this item">
+                        <span class="preference-icon">${likeIcon}</span>
+                    </button>
+                    <button class="${dislikeButtonClass}" data-item-id="${this.escapeHtml(item.id)}" data-action="dislike" aria-label="Dislike this item">
+                        <span class="preference-icon">${dislikeIcon}</span>
+                    </button>
+                </div>
+                ${item.googleSearchUrl ? `
                     <a href="${this.escapeHtml(item.googleSearchUrl)}" target="_blank" rel="noopener noreferrer" class="visual-example-link">
                         <span class="link-icon">🖼️</span>
                         ${visualExampleText}
                     </a>
-                </div>
-            ` : ''}
+                ` : ''}
+            </div>
         `;
         
         return card;
