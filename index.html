@@ -92,12 +92,12 @@
                     <h2>Welcome to Spanish Menu Cheater</h2>
                     <p>Start typing a Spanish menu item to see its translation and dietary information.</p>
                     <div class="example-searches">
-                        <p>Try searching for:</p>
-                        <ul>
-                            <li>"paella"</li>
-                            <li>"jamón"</li>
-                            <li>"gazpacho"</li>
-                        </ul>
+                        <p>Quick examples:</p>
+                        <div class="example-buttons">
+                            <button class="example-btn" onclick="document.getElementById('search-input').value='paella'; document.getElementById('search-input').dispatchEvent(new Event('input'));">paella</button>
+                            <button class="example-btn" onclick="document.getElementById('search-input').value='jamón'; document.getElementById('search-input').dispatchEvent(new Event('input'));">jamón</button>
+                            <button class="example-btn" onclick="document.getElementById('search-input').value='gazpacho'; document.getElementById('search-input').dispatchEvent(new Event('input'));">gazpacho</button>
+                        </div>
                     </div>
                 </div>
                 
@@ -128,7 +128,7 @@
                 Spanish Menu Cheater - Free offline menu translator
             </p>
             <p class="data-info">
-                200+ Spanish menu items with dietary information
+                © Marco Karmidi
             </p>
         </div>
     </footer>
