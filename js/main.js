@@ -150,7 +150,10 @@ class SpanishMenuCheater {
             loadingIndicator: document.getElementById('loading-indicator'),
             noResults: document.getElementById('no-results'),
             resultsList: document.getElementById('results-list'),
-            suggestions: document.getElementById('suggestions')
+            suggestions: document.getElementById('suggestions'),
+            preferenceFilters: document.getElementById('preference-filters'),
+            showLikedFilter: document.getElementById('show-liked-filter'),
+            hideDislikedFilter: document.getElementById('hide-disliked-filter')
         };
         
         // Validate that all required elements exist
@@ -271,6 +274,14 @@ class SpanishMenuCheater {
         
         // Preference button event listener (using event delegation)
         document.addEventListener('click', this.handlePreferenceClick.bind(this));
+        
+        // Filter button event listeners
+        if (this.elements.showLikedFilter) {
+            this.elements.showLikedFilter.addEventListener('click', this.handleFilterClick.bind(this));
+        }
+        if (this.elements.hideDislikedFilter) {
+            this.elements.hideDislikedFilter.addEventListener('click', this.handleFilterClick.bind(this));
+        }
         
         console.log('🎯 Event listeners set up successfully');
     }
@@ -496,6 +507,9 @@ class SpanishMenuCheater {
         // Optional: Add visual feedback
         this.showPreferenceFeedback(button, newPreference, action);
         
+        // Update filter UI (counts, visibility)
+        this.updatePreferenceFilterUI();
+        
         console.log(`🎯 Preference updated: ${itemId} -> ${newPreference}`);
     }
     
@@ -548,6 +562,71 @@ class SpanishMenuCheater {
     }
     
     /**
+     * Handle filter button clicks
+     */
+    handleFilterClick(event) {
+        const button = event.target.closest('.filter-btn');
+        if (!button) return;
+        
+        const filterType = button.getAttribute('data-filter');
+        if (!filterType) return;
+        
+        // Toggle filter state
+        this.state.preferences[filterType] = !this.state.preferences[filterType];
+        
+        // Update button visual state
+        this.updateFilterButtonState(button, this.state.preferences[filterType]);
+        
+        // Update preference counts and show/hide filters
+        this.updatePreferenceFilterUI();
+        
+        // Re-run current search with new filters
+        if (this.state.currentQuery) {
+            this.performSearch(this.state.currentQuery);
+        }
+        
+        console.log(`🔍 Filter toggled: ${filterType} = ${this.state.preferences[filterType]}`);
+    }
+    
+    /**
+     * Update filter button visual state
+     */
+    updateFilterButtonState(button, isActive) {
+        if (isActive) {
+            button.classList.add('active');
+        } else {
+            button.classList.remove('active');
+        }
+    }
+    
+    /**
+     * Update preference filter UI (counts, visibility)
+     */
+    updatePreferenceFilterUI() {
+        if (!this.preferencesManager || !this.elements.preferenceFilters) return;
+        
+        const counts = this.preferencesManager.getPreferenceCounts();
+        
+        // Update liked count in the button
+        const likedCountElement = this.elements.showLikedFilter?.querySelector('.filter-count');
+        if (likedCountElement) {
+            likedCountElement.textContent = `(${counts.liked})`;
+        }
+        
+        // Show/hide filter controls based on whether user has any preferences
+        if (counts.total > 0) {
+            this.elements.preferenceFilters.classList.remove('hidden');
+        } else {
+            this.elements.preferenceFilters.classList.add('hidden');
+            // Reset filter states when no preferences exist
+            this.state.preferences.showOnlyLiked = false;
+            this.state.preferences.hideDislikes = false;
+            this.updateFilterButtonState(this.elements.showLikedFilter, false);
+            this.updateFilterButtonState(this.elements.hideDislikedFilter, false);
+        }
+    }
+    
+    /**
      * Perform search using SearchEngine
      */
     performSearch(query) {
@@ -564,8 +643,9 @@ class SpanishMenuCheater {
                     throw new Error('Search not ready - data not loaded');
                 }
                 
-                // Perform search
-                const searchResult = this.searchEngine.search(query);
+                // Perform search with preference filters
+                const filters = { ...this.state.preferences };
+                const searchResult = this.searchEngine.search(query, filters, this.preferencesManager);
                 
                 this.hideLoadingState();
                 

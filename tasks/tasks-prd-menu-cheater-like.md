@@ -41,13 +41,13 @@ Based on: `prd-menu-cheater-like.md`
   - [x] 3.4 Add visual state indication (filled/outlined hearts and thumbs down based on preference)
   - [x] 3.5 Ensure 44px minimum touch targets for mobile optimization
 
-- [ ] 4.0 Implement preference filtering functionality
-  - [ ] 4.1 Add preference filter controls to `index.html` search section
-  - [ ] 4.2 Extend `applyFilters()` in `searchEngine.js` for preference filtering
-  - [ ] 4.3 Implement "Show only liked items" filter with AND logic
-  - [ ] 4.4 Implement "Hide disliked items" filter with AND logic
-  - [ ] 4.5 Add filter state management and UI updates
-  - [ ] 4.6 Display preference counts in filter buttons (e.g., "♥️ Liked (5)")
+- [x] 4.0 Implement preference filtering functionality
+  - [x] 4.1 Add preference filter controls to `index.html` search section
+  - [x] 4.2 Extend `applyFilters()` in `searchEngine.js` for preference filtering
+  - [x] 4.3 Implement "Show only liked items" filter with AND logic
+  - [x] 4.4 Implement "Hide disliked items" filter with AND logic
+  - [x] 4.5 Add filter state management and UI updates
+  - [x] 4.6 Display preference counts in filter buttons (e.g., "♥️ Liked (5)")
 
 - [ ] 5.0 Add visual indicators and user feedback
   - [ ] 5.1 Style preference buttons in `styles/components.css` with Spanish theme colors
