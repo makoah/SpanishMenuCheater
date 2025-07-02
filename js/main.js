@@ -552,13 +552,67 @@ class SpanishMenuCheater {
      * Show brief visual feedback when preference changes
      */
     showPreferenceFeedback(button, preference, action) {
-        // Add a subtle animation class temporarily
+        // Add immediate visual feedback
         button.classList.add('preference-feedback');
         
-        // Remove the class after animation
+        // Add haptic feedback for mobile devices (if supported)
+        if ('vibrate' in navigator) {
+            navigator.vibrate(50); // Short vibration
+        }
+        
+        // Show temporary feedback toast
+        this.showPreferenceToast(preference, action);
+        
+        // Remove the animation class after completion
         setTimeout(() => {
             button.classList.remove('preference-feedback');
         }, 300);
+    }
+    
+    /**
+     * Show brief toast message for preference changes
+     */
+    showPreferenceToast(preference, action) {
+        // Create or get existing toast element
+        let toast = document.getElementById('preference-toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'preference-toast';
+            toast.className = 'preference-toast';
+            document.body.appendChild(toast);
+        }
+        
+        // Set toast message based on preference
+        let message = '';
+        let icon = '';
+        switch (preference) {
+            case 'like':
+                message = 'Added to liked items';
+                icon = '❤️';
+                break;
+            case 'dislike':
+                message = 'Added to disliked items';
+                icon = '👎';
+                break;
+            case 'neutral':
+                message = action === 'like' ? 'Removed from liked' : 'Removed from disliked';
+                icon = '↩️';
+                break;
+        }
+        
+        toast.innerHTML = `<span class="toast-icon">${icon}</span><span class="toast-message">${message}</span>`;
+        
+        // Show toast with animation
+        toast.classList.remove('hidden');
+        toast.classList.add('show');
+        
+        // Hide toast after delay
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 300);
+        }, 1500);
     }
     
     /**
