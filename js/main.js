@@ -9,6 +9,7 @@
 import { DataManager } from './dataManager.js';
 import { SearchEngine } from './searchEngine.js';
 import { UpdateManager } from './updateManager.js';
+import { PreferencesManager } from './preferencesManager.js';
 // import { UIController } from './uiController.js';
 // import { LanguageManager } from './languageManager.js';
 // import { PWAManager } from './pwaManager.js';
@@ -27,6 +28,7 @@ class SpanishMenuCheater {
         this.dataManager = null;
         this.searchEngine = null;
         this.updateManager = null;
+        this.preferencesManager = null;
         this.uiController = null;
         this.languageManager = null;
         this.pwaManager = null;
@@ -51,7 +53,11 @@ class SpanishMenuCheater {
             hasResults: false,
             currentQuery: '',
             searchResults: [],
-            suggestions: []
+            suggestions: [],
+            preferences: {
+                showOnlyLiked: false,
+                hideDislikes: false
+            }
         };
         
         // Bind methods to preserve context
@@ -194,6 +200,9 @@ class SpanishMenuCheater {
         
         // Initialize UpdateManager
         this.updateManager = new UpdateManager();
+        
+        // Initialize PreferencesManager
+        this.preferencesManager = new PreferencesManager();
         
         // TODO: Initialize other modules when they are created
         // this.uiController = new UIController();
