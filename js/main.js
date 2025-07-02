@@ -269,6 +269,9 @@ class SpanishMenuCheater {
             this.elements.languageToggle.addEventListener('click', this.handleLanguageToggle.bind(this));
         }
         
+        // Preference button event listener (using event delegation)
+        document.addEventListener('click', this.handlePreferenceClick.bind(this));
+        
         console.log('🎯 Event listeners set up successfully');
     }
     
@@ -458,6 +461,93 @@ class SpanishMenuCheater {
     }
     
     /**
+     * Handle preference button clicks (like/dislike)
+     */
+    handlePreferenceClick(event) {
+        // Check if the clicked element is a preference button
+        const button = event.target.closest('.preference-btn');
+        if (!button) return;
+        
+        const itemId = button.getAttribute('data-item-id');
+        const action = button.getAttribute('data-action');
+        
+        if (!itemId || !action || !this.preferencesManager) return;
+        
+        // Get current preference
+        const currentPreference = this.preferencesManager.getPreference(itemId);
+        let newPreference;
+        
+        // Toggle logic: if clicking the same preference, set to neutral
+        if (action === 'like') {
+            newPreference = currentPreference === 'like' ? 'neutral' : 'like';
+        } else if (action === 'dislike') {
+            newPreference = currentPreference === 'dislike' ? 'neutral' : 'dislike';
+        }
+        
+        // Update preference
+        this.preferencesManager.setPreference(itemId, newPreference);
+        
+        // Update UI immediately - find the result card and update button states
+        const resultCard = button.closest('.result-card');
+        if (resultCard) {
+            this.updatePreferenceButtonsInCard(resultCard, itemId, newPreference);
+        }
+        
+        // Optional: Add visual feedback
+        this.showPreferenceFeedback(button, newPreference, action);
+        
+        console.log(`🎯 Preference updated: ${itemId} -> ${newPreference}`);
+    }
+    
+    /**
+     * Update preference buttons in a specific result card
+     */
+    updatePreferenceButtonsInCard(card, itemId, preference) {
+        const likeBtn = card.querySelector('.like-btn');
+        const dislikeBtn = card.querySelector('.dislike-btn');
+        const likeIcon = likeBtn?.querySelector('.preference-icon');
+        const dislikeIcon = dislikeBtn?.querySelector('.preference-icon');
+        
+        if (!likeBtn || !dislikeBtn || !likeIcon || !dislikeIcon) return;
+        
+        // Reset classes
+        likeBtn.className = 'preference-btn like-btn';
+        dislikeBtn.className = 'preference-btn dislike-btn';
+        
+        // Set states based on preference
+        switch (preference) {
+            case 'like':
+                likeBtn.className += ' active';
+                likeIcon.textContent = '❤️';
+                dislikeIcon.textContent = '👎';
+                break;
+            case 'dislike':
+                dislikeBtn.className += ' active';
+                likeIcon.textContent = '🤍';
+                dislikeIcon.textContent = '👎';
+                break;
+            case 'neutral':
+            default:
+                likeIcon.textContent = '🤍';
+                dislikeIcon.textContent = '👎';
+                break;
+        }
+    }
+    
+    /**
+     * Show brief visual feedback when preference changes
+     */
+    showPreferenceFeedback(button, preference, action) {
+        // Add a subtle animation class temporarily
+        button.classList.add('preference-feedback');
+        
+        // Remove the class after animation
+        setTimeout(() => {
+            button.classList.remove('preference-feedback');
+        }, 300);
+    }
+    
+    /**
      * Perform search using SearchEngine
      */
     performSearch(query) {
@@ -619,6 +709,15 @@ class SpanishMenuCheater {
         const translationDescription = this.currentLanguage === 'nl' ? item.dutchDescription : item.description;
         const visualExampleText = this.currentLanguage === 'nl' ? 'Bekijk Voorbeelden' : 'See Visual Examples';
         
+        // Get current preference state
+        const currentPreference = this.preferencesManager ? this.preferencesManager.getPreference(item.id) : 'neutral';
+        
+        // Preference button states
+        const likeButtonClass = currentPreference === 'like' ? 'preference-btn like-btn active' : 'preference-btn like-btn';
+        const dislikeButtonClass = currentPreference === 'dislike' ? 'preference-btn dislike-btn active' : 'preference-btn dislike-btn';
+        const likeIcon = currentPreference === 'like' ? '❤️' : '🤍';
+        const dislikeIcon = currentPreference === 'dislike' ? '👎' : '👎';
+        
         card.innerHTML = `
             <div class="result-header">
                 <h3 class="result-spanish">${this.escapeHtml(item.spanishName)}</h3>
@@ -627,14 +726,22 @@ class SpanishMenuCheater {
             <h4 class="result-english">${this.escapeHtml(translationName)}</h4>
             ${translationDescription ? `<p class="result-description">${this.escapeHtml(translationDescription)}</p>` : ''}
             ${dietaryTags.length > 0 ? `<div class="dietary-info">${dietaryTags.join('')}</div>` : ''}
-            ${item.googleSearchUrl ? `
-                <div class="result-actions">
+            <div class="result-actions">
+                <div class="preference-controls">
+                    <button class="${likeButtonClass}" data-item-id="${this.escapeHtml(item.id)}" data-action="like" aria-label="Like this item">
+                        <span class="preference-icon">${likeIcon}</span>
+                    </button>
+                    <button class="${dislikeButtonClass}" data-item-id="${this.escapeHtml(item.id)}" data-action="dislike" aria-label="Dislike this item">
+                        <span class="preference-icon">${dislikeIcon}</span>
+                    </button>
+                </div>
+                ${item.googleSearchUrl ? `
                     <a href="${this.escapeHtml(item.googleSearchUrl)}" target="_blank" rel="noopener noreferrer" class="visual-example-link">
                         <span class="link-icon">🖼️</span>
                         ${visualExampleText}
                     </a>
-                </div>
-            ` : ''}
+                ` : ''}
+            </div>
         `;
         
         return card;

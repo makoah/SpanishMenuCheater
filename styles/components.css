@@ -648,6 +648,85 @@
   box-shadow: var(--shadow-sm);
 }
 
+/* Preference Controls */
+.preference-controls {
+  display: flex;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-sm);
+}
+
+.preference-btn {
+  background: none;
+  border: 2px solid rgba(210, 105, 30, 0.2);
+  border-radius: var(--radius-md);
+  padding: var(--space-xs);
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.preference-btn:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.preference-btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.preference-btn.active {
+  border-color: var(--color-primary);
+  background: rgba(210, 105, 30, 0.1);
+}
+
+.preference-btn.like-btn.active {
+  background: rgba(220, 20, 60, 0.1);
+  border-color: #dc143c;
+}
+
+.preference-btn.dislike-btn.active {
+  background: rgba(128, 128, 128, 0.1);
+  border-color: #666;
+}
+
+.preference-icon {
+  font-size: 18px;
+  line-height: 1;
+  transition: transform var(--transition-fast);
+}
+
+.preference-btn:hover .preference-icon {
+  transform: scale(1.1);
+}
+
+.preference-btn.preference-feedback {
+  animation: preference-pulse 0.3s ease-out;
+}
+
+@keyframes preference-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Result Actions Layout Update */
+.result-actions {
+  margin-top: var(--space-md);
+  padding-top: var(--space-sm);
+  border-top: 1px solid rgba(210, 105, 30, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
 .visual-example-link:active {
   transform: translateY(0);
 }
@@ -1065,6 +1144,18 @@
   .dietary-tag {
     padding: 0.25rem var(--space-xs);
     font-size: 0.625rem; /* 10px */
+  }
+  
+  /* Ensure preference buttons remain accessible on small screens */
+  .preference-btn {
+    min-width: 44px;
+    min-height: 44px;
+    padding: var(--space-xs);
+  }
+  
+  .preference-controls {
+    gap: var(--space-xs);
+    justify-content: flex-start;
   }
 }
 
