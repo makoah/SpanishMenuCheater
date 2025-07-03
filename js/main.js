@@ -37,6 +37,7 @@ class SpanishMenuCheater {
         this.elements = {
             searchInput: null,
             clearButton: null,
+            shareButton: null,
             languageToggle: null,
             offlineIndicator: null,
             welcomeMessage: null,
@@ -144,6 +145,7 @@ class SpanishMenuCheater {
         this.elements = {
             searchInput: document.getElementById('search-input'),
             clearButton: document.getElementById('clear-search'),
+            shareButton: document.getElementById('share-btn'),
             languageToggle: document.getElementById('language-toggle'),
             offlineIndicator: document.getElementById('offline-indicator'),
             welcomeMessage: document.getElementById('welcome-message'),
@@ -265,6 +267,11 @@ class SpanishMenuCheater {
         // Clear button event listener
         if (this.elements.clearButton) {
             this.elements.clearButton.addEventListener('click', this.handleClearSearch.bind(this));
+        }
+        
+        // Share button event listener
+        if (this.elements.shareButton) {
+            this.elements.shareButton.addEventListener('click', this.handleShareButton.bind(this));
         }
         
         // Language toggle event listener
@@ -442,6 +449,68 @@ class SpanishMenuCheater {
         this.clearSearch();
     }
     
+    /**
+     * Handle share button click
+     */
+    async handleShareButton() {
+        const shareData = {
+            title: 'Spanish Menu Cheater',
+            text: 'Check out Spanish Menu Cheater - a free offline Spanish menu translator! Perfect for traveling in Spain 🇪🇸',
+            url: window.location.href
+        };
+
+        try {
+            // Check if Web Share API is supported
+            if (navigator.share) {
+                await navigator.share(shareData);
+                console.log('📤 App shared successfully via native share');
+            } else {
+                // Fallback: copy to clipboard
+                const shareText = `${shareData.text}\n${shareData.url}`;
+                await navigator.clipboard.writeText(shareText);
+                
+                // Show feedback to user
+                this.showShareFeedback('Link copied to clipboard!');
+                console.log('📋 Share link copied to clipboard');
+            }
+        } catch (error) {
+            // Handle share cancellation or errors gracefully
+            if (error.name !== 'AbortError') {
+                console.error('❌ Error sharing app:', error);
+                this.showShareFeedback('Unable to share. Please try again.');
+            }
+        }
+    }
+
+    /**
+     * Show feedback message for share action
+     */
+    showShareFeedback(message) {
+        // Create temporary feedback element
+        const feedback = document.createElement('div');
+        feedback.textContent = message;
+        feedback.style.cssText = `
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-success);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            z-index: 1000;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        `;
+        
+        document.body.appendChild(feedback);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            feedback.remove();
+        }, 3000);
+    }
+
     /**
      * Handle language toggle button click
      */
