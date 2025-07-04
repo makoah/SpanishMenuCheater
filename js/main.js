@@ -10,6 +10,9 @@ import { DataManager } from './dataManager.js';
 import { SearchEngine } from './searchEngine.js';
 import { UpdateManager } from './updateManager.js';
 import { PreferencesManager } from './preferencesManager.js';
+import CameraManager from './cameraManager.js';
+import OCRProcessor from './ocrProcessor.js';
+import TextProcessor from './textProcessor.js';
 // import { UIController } from './uiController.js';
 // import { LanguageManager } from './languageManager.js';
 // import { PWAManager } from './pwaManager.js';
@@ -29,6 +32,9 @@ class SpanishMenuCheater {
         this.searchEngine = null;
         this.updateManager = null;
         this.preferencesManager = null;
+        this.cameraManager = null;
+        this.ocrProcessor = null;
+        this.textProcessor = null;
         this.uiController = null;
         this.languageManager = null;
         this.pwaManager = null;
@@ -38,13 +44,26 @@ class SpanishMenuCheater {
             searchInput: null,
             clearButton: null,
             shareButton: null,
+            cameraButton: null,
             languageToggle: null,
             offlineIndicator: null,
             welcomeMessage: null,
             loadingIndicator: null,
             noResults: null,
             resultsList: null,
-            suggestions: null
+            suggestions: null,
+            // Camera modal elements
+            cameraModal: null,
+            cameraVideo: null,
+            cameraCanvas: null,
+            cameraClose: null,
+            cameraCapture: null,
+            cameraRetake: null,
+            cameraProcess: null,
+            cameraLoading: null,
+            cameraResults: null,
+            cameraError: null,
+            textSuggestions: null
         };
         
         // Application state
@@ -58,6 +77,13 @@ class SpanishMenuCheater {
             preferences: {
                 showOnlyLiked: false,
                 hideDislikes: false
+            },
+            camera: {
+                isModalOpen: false,
+                isProcessing: false,
+                currentPhoto: null,
+                detectedText: null,
+                suggestions: []
             }
         };
         
@@ -146,6 +172,7 @@ class SpanishMenuCheater {
             searchInput: document.getElementById('search-input'),
             clearButton: document.getElementById('clear-search'),
             shareButton: document.getElementById('share-btn'),
+            cameraButton: document.getElementById('camera-btn'),
             languageToggle: document.getElementById('language-toggle'),
             offlineIndicator: document.getElementById('offline-indicator'),
             welcomeMessage: document.getElementById('welcome-message'),
@@ -155,7 +182,19 @@ class SpanishMenuCheater {
             suggestions: document.getElementById('suggestions'),
             preferenceFilters: document.getElementById('preference-filters'),
             showLikedFilter: document.getElementById('show-liked-filter'),
-            hideDislikedFilter: document.getElementById('hide-disliked-filter')
+            hideDislikedFilter: document.getElementById('hide-disliked-filter'),
+            // Camera modal elements
+            cameraModal: document.getElementById('camera-modal'),
+            cameraVideo: document.getElementById('camera-video'),
+            cameraCanvas: document.getElementById('camera-canvas'),
+            cameraClose: document.getElementById('camera-close'),
+            cameraCapture: document.getElementById('camera-capture'),
+            cameraRetake: document.getElementById('camera-retake'),
+            cameraProcess: document.getElementById('camera-process'),
+            cameraLoading: document.querySelector('.camera-loading'),
+            cameraResults: document.querySelector('.camera-results'),
+            cameraError: document.querySelector('.camera-error'),
+            textSuggestions: document.querySelector('.text-suggestions')
         };
         
         // Validate critical elements only - don't fail on missing optional elements
@@ -216,6 +255,11 @@ class SpanishMenuCheater {
         
         // Initialize PreferencesManager
         this.preferencesManager = new PreferencesManager();
+        
+        // Initialize Camera modules
+        this.cameraManager = new CameraManager();
+        this.ocrProcessor = new OCRProcessor();
+        this.textProcessor = new TextProcessor();
         
         // TODO: Initialize other modules when they are created
         // this.uiController = new UIController();
@@ -280,6 +324,25 @@ class SpanishMenuCheater {
         // Share button event listener
         if (this.elements.shareButton) {
             this.elements.shareButton.addEventListener('click', this.handleShareButton.bind(this));
+        }
+        
+        // Camera button event listener
+        if (this.elements.cameraButton) {
+            this.elements.cameraButton.addEventListener('click', this.handleCameraClick.bind(this));
+        }
+        
+        // Camera modal event listeners
+        if (this.elements.cameraClose) {
+            this.elements.cameraClose.addEventListener('click', this.handleCameraClose.bind(this));
+        }
+        if (this.elements.cameraCapture) {
+            this.elements.cameraCapture.addEventListener('click', this.handleCameraCapture.bind(this));
+        }
+        if (this.elements.cameraRetake) {
+            this.elements.cameraRetake.addEventListener('click', this.handleCameraRetake.bind(this));
+        }
+        if (this.elements.cameraProcess) {
+            this.elements.cameraProcess.addEventListener('click', this.handleCameraProcess.bind(this));
         }
         
         // Language toggle event listener
@@ -1339,6 +1402,364 @@ class SpanishMenuCheater {
                 }, 300);
             }
         }, 3000);
+    }
+    
+    // ===== CAMERA METHODS =====
+    
+    /**
+     * Handle camera button click
+     */
+    async handleCameraClick() {
+        try {
+            console.log('📷 Camera button clicked');
+            
+            // Check if camera is supported
+            if (!this.cameraManager.isSupported()) {
+                this.showCameraError('Camera not supported', 'Your browser does not support camera access');
+                return;
+            }
+            
+            // Open camera modal
+            this.openCameraModal();
+            
+            // Initialize camera
+            await this.initializeCamera();
+            
+        } catch (error) {
+            console.error('Failed to open camera:', error);
+            this.showCameraError('Camera Error', error.message || 'Failed to access camera');
+        }
+    }
+    
+    /**
+     * Open camera modal
+     */
+    openCameraModal() {
+        if (this.elements.cameraModal) {
+            this.elements.cameraModal.classList.remove('hidden');
+            this.state.camera.isModalOpen = true;
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+    }
+    
+    /**
+     * Close camera modal
+     */
+    closeCameraModal() {
+        if (this.elements.cameraModal) {
+            this.elements.cameraModal.classList.add('hidden');
+            this.state.camera.isModalOpen = false;
+            document.body.style.overflow = ''; // Restore scrolling
+            
+            // Clean up camera resources
+            this.cameraManager.cleanup();
+            this.resetCameraState();
+        }
+    }
+    
+    /**
+     * Initialize camera
+     */
+    async initializeCamera() {
+        try {
+            this.showCameraSection('preview');
+            
+            // Initialize camera with video element
+            await this.cameraManager.initializeVideo(this.elements.cameraVideo);
+            
+            console.log('📷 Camera initialized successfully');
+            
+        } catch (error) {
+            console.error('Camera initialization failed:', error);
+            
+            const errorInfo = this.cameraManager.getCameraErrorInfo(error);
+            this.showCameraError(errorInfo.userMessage, this.getCameraErrorSuggestion(errorInfo));
+        }
+    }
+    
+    /**
+     * Handle camera close button
+     */
+    handleCameraClose() {
+        this.closeCameraModal();
+    }
+    
+    /**
+     * Handle camera capture button
+     */
+    async handleCameraCapture() {
+        try {
+            console.log('📸 Capturing photo...');
+            
+            // Capture photo
+            const photoData = await this.cameraManager.capturePhoto();
+            this.state.camera.currentPhoto = photoData;
+            
+            // Show captured photo
+            this.showCapturedPhoto(photoData);
+            
+            // Update UI state
+            this.showCameraSection('captured');
+            
+        } catch (error) {
+            console.error('Photo capture failed:', error);
+            this.showCameraError('Capture Failed', 'Failed to capture photo. Please try again.');
+        }
+    }
+    
+    /**
+     * Handle camera retake button
+     */
+    handleCameraRetake() {
+        console.log('🔄 Retaking photo...');
+        
+        // Reset to preview mode
+        this.showCameraSection('preview');
+        this.state.camera.currentPhoto = null;
+        
+        // Hide captured photo
+        if (this.elements.cameraCanvas) {
+            this.elements.cameraCanvas.classList.add('hidden');
+        }
+        if (this.elements.cameraVideo) {
+            this.elements.cameraVideo.classList.remove('hidden');
+        }
+    }
+    
+    /**
+     * Handle camera process button
+     */
+    async handleCameraProcess() {
+        if (!this.state.camera.currentPhoto) {
+            return;
+        }
+        
+        try {
+            console.log('🔍 Processing photo for text...');
+            this.state.camera.isProcessing = true;
+            
+            // Show loading state
+            this.showCameraSection('loading');
+            
+            // Initialize OCR processor if needed
+            if (!this.ocrProcessor.isInitialized) {
+                await this.ocrProcessor.initialize((progress) => {
+                    this.updateCameraProgress(progress);
+                });
+            }
+            
+            // Process image with OCR
+            const ocrResult = await this.ocrProcessor.processImage(
+                this.state.camera.currentPhoto.dataUrl,
+                {
+                    preprocessImage: true,
+                    confidence: 30,
+                    maxTime: 30000
+                }
+            );
+            
+            // Process text to find Spanish words
+            const textResult = this.textProcessor.processOCRText(ocrResult, {
+                minWordLength: 2,
+                maxWordLength: 25,
+                minConfidence: 30,
+                includePartialMatches: true,
+                fuzzyThreshold: 0.7
+            });
+            
+            this.state.camera.detectedText = textResult;
+            this.state.camera.suggestions = textResult.suggestions;
+            
+            // Show results
+            if (textResult.suggestions.length > 0) {
+                this.showCameraResults(textResult);
+            } else {
+                this.showCameraError('No Text Found', 'No Spanish menu items detected. Try a clearer photo or enter text manually.');
+            }
+            
+        } catch (error) {
+            console.error('Text processing failed:', error);
+            this.showCameraError('Processing Failed', 'Failed to process image. Please try again or enter text manually.');
+        } finally {
+            this.state.camera.isProcessing = false;
+        }
+    }
+    
+    /**
+     * Show captured photo
+     */
+    showCapturedPhoto(photoData) {
+        if (this.elements.cameraCanvas && this.elements.cameraVideo) {
+            // Hide video, show canvas
+            this.elements.cameraVideo.classList.add('hidden');
+            this.elements.cameraCanvas.classList.remove('hidden');
+            
+            // Draw captured image to canvas
+            const ctx = this.elements.cameraCanvas.getContext('2d');
+            const img = new Image();
+            img.onload = () => {
+                this.elements.cameraCanvas.width = img.width;
+                this.elements.cameraCanvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+            };
+            img.src = photoData.dataUrl;
+        }
+    }
+    
+    /**
+     * Show camera section
+     */
+    showCameraSection(section) {
+        const sections = ['preview', 'captured', 'loading', 'results', 'error'];
+        
+        sections.forEach(s => {
+            const element = this.elements[`camera${s.charAt(0).toUpperCase() + s.slice(1)}`] || 
+                           document.querySelector(`.camera-${s}`);
+            if (element) {
+                if (s === section) {
+                    element.classList.remove('hidden');
+                } else {
+                    element.classList.add('hidden');
+                }
+            }
+        });
+        
+        // Show/hide camera controls based on section
+        this.updateCameraControls(section);
+    }
+    
+    /**
+     * Update camera controls visibility
+     */
+    updateCameraControls(section) {
+        const controls = {
+            cameraCapture: section === 'preview',
+            cameraRetake: section === 'captured',
+            cameraProcess: section === 'captured'
+        };
+        
+        Object.entries(controls).forEach(([controlId, visible]) => {
+            const element = this.elements[controlId];
+            if (element) {
+                if (visible) {
+                    element.classList.remove('hidden');
+                } else {
+                    element.classList.add('hidden');
+                }
+            }
+        });
+    }
+    
+    /**
+     * Update camera processing progress
+     */
+    updateCameraProgress(progress) {
+        const progressFill = document.querySelector('.progress-fill');
+        const progressText = document.querySelector('.progress-text');
+        const loadingText = document.querySelector('.loading-text');
+        
+        if (progressFill) {
+            progressFill.style.width = `${progress.progress}%`;
+        }
+        if (progressText) {
+            progressText.textContent = `${progress.progress}%`;
+        }
+        if (loadingText) {
+            loadingText.textContent = progress.message;
+        }
+    }
+    
+    /**
+     * Show camera results
+     */
+    showCameraResults(textResult) {
+        this.showCameraSection('results');
+        
+        if (this.elements.textSuggestions) {
+            this.elements.textSuggestions.innerHTML = '';
+            
+            textResult.suggestions.forEach(suggestion => {
+                const chip = document.createElement('button');
+                chip.className = 'suggestion-chip';
+                chip.textContent = suggestion.text;
+                chip.title = `Confidence: ${suggestion.confidence}% | Type: ${suggestion.type}`;
+                
+                chip.addEventListener('click', () => {
+                    this.handleSuggestionClick(suggestion.text);
+                });
+                
+                this.elements.textSuggestions.appendChild(chip);
+            });
+        }
+    }
+    
+    /**
+     * Handle suggestion chip click
+     */
+    handleSuggestionClick(text) {
+        // Populate search input with selected text
+        if (this.elements.searchInput) {
+            this.elements.searchInput.value = text;
+            this.state.currentQuery = text;
+            
+            // Trigger search
+            this.performSearch(text);
+        }
+        
+        // Close camera modal
+        this.closeCameraModal();
+    }
+    
+    /**
+     * Show camera error
+     */
+    showCameraError(title, message) {
+        this.showCameraSection('error');
+        
+        const errorTitle = document.querySelector('.error-title');
+        const errorMessage = document.querySelector('.error-message');
+        
+        if (errorTitle) errorTitle.textContent = title;
+        if (errorMessage) errorMessage.textContent = message;
+        
+        // Set up error action handlers
+        const retryBtn = document.querySelector('.error-retry-btn');
+        const manualBtn = document.querySelector('.error-manual-btn');
+        
+        if (retryBtn) {
+            retryBtn.onclick = () => this.initializeCamera();
+        }
+        if (manualBtn) {
+            manualBtn.onclick = () => this.closeCameraModal();
+        }
+    }
+    
+    /**
+     * Get camera error suggestion
+     */
+    getCameraErrorSuggestion(errorInfo) {
+        const suggestions = {
+            permission_denied: 'Please allow camera access in your browser settings and try again.',
+            no_camera: 'Connect a camera to your device or use manual text entry.',
+            not_supported: 'Try using a different browser that supports camera access.',
+            camera_busy: 'Close other apps that might be using the camera.',
+            constraints_error: 'Your camera may not support the required settings.'
+        };
+        
+        return suggestions[errorInfo.type] || 'Please try again or enter text manually.';
+    }
+    
+    /**
+     * Reset camera state
+     */
+    resetCameraState() {
+        this.state.camera = {
+            isModalOpen: false,
+            isProcessing: false,
+            currentPhoto: null,
+            detectedText: null,
+            suggestions: []
+        };
     }
     
     /**

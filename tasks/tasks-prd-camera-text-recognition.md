@@ -44,9 +44,9 @@
   - [x] 4.4 Create suggestion system for partial/fuzzy word matches
   - [x] 4.5 Add unit tests for text processing and filtering functions
 
-- [ ] 5.0 Integrate camera results with existing search functionality
-  - [ ] 5.1 Connect camera icon click to photo capture workflow
-  - [ ] 5.2 Display detected Spanish words as clickable suggestion chips
-  - [ ] 5.3 Populate search input with selected text from camera results
-  - [ ] 5.4 Integrate camera results with existing search engine and fuzzy matching
-  - [ ] 5.5 Add end-to-end testing for complete camera-to-search workflow
+- [x] 5.0 Integrate camera results with existing search functionality
+  - [x] 5.1 Connect camera icon click to photo capture workflow
+  - [x] 5.2 Display detected Spanish words as clickable suggestion chips
+  - [x] 5.3 Populate search input with selected text from camera results
+  - [x] 5.4 Integrate camera results with existing search engine and fuzzy matching
+  - [x] 5.5 Add end-to-end testing for complete camera-to-search workflow
