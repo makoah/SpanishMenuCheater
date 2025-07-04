@@ -3,6 +3,8 @@
  * Global test configuration and mocks for Spanish Menu Cheater PWA
  */
 
+import { jest } from '@jest/globals';
+
 // Mock DOM globals that may not be available in jsdom
 global.console = {
   ...console,
