@@ -918,7 +918,9 @@ class SpanishMenuCheater {
         // Use appropriate language based on current setting
         const translationName = this.currentLanguage === 'nl' ? item.dutchName : item.englishName;
         const translationDescription = this.currentLanguage === 'nl' ? item.dutchDescription : item.description;
-        const visualExampleText = this.currentLanguage === 'nl' ? 'Bekijk Voorbeelden' : 'See Visual Examples';
+        const visualExampleText = this.currentLanguage === 'nl' ? 'Bekijk' : 'View';
+        const likeText = this.currentLanguage === 'nl' ? 'Vind ik leuk' : 'Like';
+        const dislikeText = this.currentLanguage === 'nl' ? 'Niet leuk' : 'Pass';
         
         // Get current preference state
         const currentPreference = this.preferencesManager ? this.preferencesManager.getPreference(item.id) : 'neutral';
@@ -938,18 +940,18 @@ class SpanishMenuCheater {
             ${translationDescription ? `<p class="result-description">${this.escapeHtml(translationDescription)}</p>` : ''}
             ${dietaryTags.length > 0 ? `<div class="dietary-info">${dietaryTags.join('')}</div>` : ''}
             <div class="result-actions">
-                <div class="preference-controls">
-                    <button class="${likeButtonClass}" data-item-id="${this.escapeHtml(item.id)}" data-action="like" aria-label="Like this item">
-                        <span class="preference-icon">${likeIcon}</span>
-                    </button>
-                    <button class="${dislikeButtonClass}" data-item-id="${this.escapeHtml(item.id)}" data-action="dislike" aria-label="Dislike this item">
-                        <span class="preference-icon">${dislikeIcon}</span>
-                    </button>
-                </div>
+                <button class="${likeButtonClass}" data-item-id="${this.escapeHtml(item.id)}" data-action="like" aria-label="Like this item">
+                    <span class="preference-icon">${likeIcon}</span>
+                    <span class="preference-text">${likeText}</span>
+                </button>
+                <button class="${dislikeButtonClass}" data-item-id="${this.escapeHtml(item.id)}" data-action="dislike" aria-label="Dislike this item">
+                    <span class="preference-icon">${dislikeIcon}</span>
+                    <span class="preference-text">${dislikeText}</span>
+                </button>
                 ${item.googleSearchUrl ? `
                     <a href="${this.escapeHtml(item.googleSearchUrl)}" target="_blank" rel="noopener noreferrer" class="visual-example-link">
-                        <span class="link-icon">🖼️</span>
-                        ${visualExampleText}
+                        <span class="link-icon">🔍</span>
+                        <span class="link-text">${visualExampleText}</span>
                     </a>
                 ` : ''}
             </div>

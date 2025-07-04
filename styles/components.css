@@ -736,8 +736,10 @@
 }
 
 .visual-example-link {
-  display: inline-flex;
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: var(--space-xs);
   padding: var(--space-xs) var(--space-sm);
   background: rgba(210, 105, 30, 0.1);
@@ -748,6 +750,7 @@
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   transition: all var(--transition-fast);
+  min-height: 44px;
 }
 
 .visual-example-link:hover {
@@ -757,27 +760,23 @@
   box-shadow: var(--shadow-sm);
 }
 
-/* Preference Controls */
-.preference-controls {
-  display: flex;
-  gap: var(--space-xs);
-  margin-bottom: var(--space-sm);
-}
+/* Preference Controls - No longer used, buttons are direct children of result-actions */
 
 .preference-btn {
   background: none;
   border: 2px solid rgba(210, 105, 30, 0.2);
   border-radius: var(--radius-md);
-  padding: var(--space-xs);
-  min-width: 44px;
+  padding: var(--space-xs) var(--space-sm);
   min-height: 44px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all var(--transition-fast);
   position: relative;
   overflow: hidden;
+  gap: var(--space-xs);
 }
 
 .preference-btn:hover {
@@ -810,6 +809,24 @@
   font-size: 18px;
   line-height: 1;
   transition: transform var(--transition-fast);
+}
+
+.preference-text {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: inherit;
+  text-align: center;
+  pointer-events: none;
+  line-height: 1.2;
+}
+
+.link-text {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: inherit;
+  text-align: center;
+  pointer-events: none;
+  line-height: 1.2;
 }
 
 .preference-btn:hover .preference-icon {
@@ -889,8 +906,13 @@
   padding-top: var(--space-sm);
   border-top: 1px solid rgba(210, 105, 30, 0.1);
   display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--space-xs);
+  align-items: stretch;
+}
+
+.result-actions > * {
+  flex: 1;
+  min-width: 0;
 }
 
 /* Mobile Responsive Improvements */
@@ -952,10 +974,13 @@
     font-size: var(--font-size-xs);
   }
   
-  /* Preference Controls */
-  .preference-controls {
-    justify-content: center;
-    gap: var(--space-md);
+  /* Result Actions Mobile - Three Equal Columns */
+  .result-actions {
+    gap: var(--space-xs);
+  }
+  
+  .result-actions > * {
+    min-height: 48px;
   }
   
   .preference-btn {
