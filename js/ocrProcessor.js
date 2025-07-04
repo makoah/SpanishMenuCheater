@@ -1,4 +1,4 @@
-import Tesseract from 'tesseract.js';
+// Tesseract will be loaded via CDN script tag
 
 class OCRProcessor {
     constructor() {
