@@ -92,14 +92,34 @@
             <div id="search-results" class="search-results">
                 <!-- Welcome message when no search -->
                 <div id="welcome-message" class="welcome-message">
-                    <h2>Welcome to Spanish Menu Cheater</h2>
-                    <p>Start typing a Spanish menu item to see its translation and dietary information.</p>
+                    <div class="welcome-hero">
+                        <div class="welcome-icon">🇪🇸</div>
+                        <h2 class="welcome-title">¡Bienvenido!</h2>
+                        <p class="welcome-subtitle">Your Spanish menu translator</p>
+                    </div>
+                    
+                    <div class="welcome-description">
+                        <p>Discover what's on your plate! Type any Spanish dish to see its translation, ingredients, and dietary information.</p>
+                    </div>
+                    
                     <div class="example-searches">
-                        <p>Quick examples:</p>
-                        <div class="example-buttons">
-                            <button class="example-btn" onclick="document.getElementById('search-input').value='paella'; document.getElementById('search-input').dispatchEvent(new Event('input'));">paella</button>
-                            <button class="example-btn" onclick="document.getElementById('search-input').value='jamón'; document.getElementById('search-input').dispatchEvent(new Event('input'));">jamón</button>
-                            <button class="example-btn" onclick="document.getElementById('search-input').value='gazpacho'; document.getElementById('search-input').dispatchEvent(new Event('input'));">gazpacho</button>
+                        <h3 class="examples-title">Try these popular dishes:</h3>
+                        <div class="example-grid">
+                            <button class="example-card" onclick="document.getElementById('search-input').value='paella'; document.getElementById('search-input').dispatchEvent(new Event('input'));">
+                                <span class="dish-emoji">🥘</span>
+                                <span class="dish-name">paella</span>
+                                <span class="dish-hint">Saffron rice dish</span>
+                            </button>
+                            <button class="example-card" onclick="document.getElementById('search-input').value='jamón'; document.getElementById('search-input').dispatchEvent(new Event('input'));">
+                                <span class="dish-emoji">🥓</span>
+                                <span class="dish-name">jamón</span>
+                                <span class="dish-hint">Spanish ham</span>
+                            </button>
+                            <button class="example-card" onclick="document.getElementById('search-input').value='gazpacho'; document.getElementById('search-input').dispatchEvent(new Event('input'));">
+                                <span class="dish-emoji">🍅</span>
+                                <span class="dish-name">gazpacho</span>
+                                <span class="dish-hint">Cold tomato soup</span>
+                            </button>
                         </div>
                     </div>
                 </div>

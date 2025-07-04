@@ -158,13 +158,21 @@ class SpanishMenuCheater {
             hideDislikedFilter: document.getElementById('hide-disliked-filter')
         };
         
-        // Validate that all required elements exist
-        const missingElements = Object.entries(this.elements)
-            .filter(([key, element]) => !element)
+        // Validate critical elements only - don't fail on missing optional elements
+        const criticalElements = ['searchInput', 'languageToggle', 'welcomeMessage', 'resultsList'];
+        const missingCritical = criticalElements.filter(key => !this.elements[key]);
+        
+        if (missingCritical.length > 0) {
+            throw new Error(`Missing critical DOM elements: ${missingCritical.join(', ')}`);
+        }
+        
+        // Log warnings for missing optional elements
+        const optionalElements = Object.entries(this.elements)
+            .filter(([key, element]) => !element && !criticalElements.includes(key))
             .map(([key]) => key);
             
-        if (missingElements.length > 0) {
-            throw new Error(`Missing required DOM elements: ${missingElements.join(', ')}`);
+        if (optionalElements.length > 0) {
+            console.log(`ℹ️ Optional elements missing: ${optionalElements.join(', ')}`);
         }
         
         console.log('📍 DOM elements initialized successfully');
