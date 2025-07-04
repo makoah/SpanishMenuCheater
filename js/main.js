@@ -293,6 +293,11 @@ class SpanishMenuCheater {
             this.searchEngine.buildSearchIndex();
             console.log('🔍 Search index built successfully');
             
+            // Test autocomplete functionality
+            console.log('🧪 Testing autocomplete with "p"...');
+            const testSuggestions = this.searchEngine.getAutocompleteSuggestions('p', 3);
+            console.log('🧪 Test suggestions:', testSuggestions);
+            
         } catch (error) {
             console.error('❌ Failed to load menu data:', error);
             this.isDataLoaded = false;
@@ -329,6 +334,9 @@ class SpanishMenuCheater {
         // Camera button event listener
         if (this.elements.cameraButton) {
             this.elements.cameraButton.addEventListener('click', this.handleCameraClick.bind(this));
+            console.log('📷 Camera button event listener attached successfully');
+        } else {
+            console.warn('❌ Camera button not found - camera functionality disabled');
         }
         
         // Camera modal event listeners
