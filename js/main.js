@@ -13,6 +13,7 @@ import { PreferencesManager } from './preferencesManager.js';
 import CameraManager from './cameraManager.js';
 import OCRProcessor from './ocrProcessor.js';
 import TextProcessor from './textProcessor.js';
+import HybridOCRProcessor from './hybridOCRProcessor.js';
 // import { UIController } from './uiController.js';
 // import { LanguageManager } from './languageManager.js';
 // import { PWAManager } from './pwaManager.js';
@@ -33,7 +34,8 @@ class SpanishMenuCheater {
         this.updateManager = null;
         this.preferencesManager = null;
         this.cameraManager = null;
-        this.ocrProcessor = null;
+        this.ocrProcessor = null; // Legacy OCR processor (Tesseract.js only)
+        this.hybridOCRProcessor = null; // New hybrid OCR processor
         this.textProcessor = null;
         this.uiController = null;
         this.languageManager = null;
@@ -258,7 +260,8 @@ class SpanishMenuCheater {
         
         // Initialize Camera modules
         this.cameraManager = new CameraManager();
-        this.ocrProcessor = new OCRProcessor();
+        this.ocrProcessor = new OCRProcessor(); // Keep legacy for backwards compatibility
+        this.hybridOCRProcessor = new HybridOCRProcessor(); // New hybrid system
         this.textProcessor = new TextProcessor();
         
         // TODO: Initialize other modules when they are created
@@ -1549,6 +1552,62 @@ class SpanishMenuCheater {
     }
     
     /**
+     * Get Google Vision API key from local storage
+     * @returns {string|null} API key or null if not set
+     */
+    getGoogleVisionApiKey() {
+        try {
+            return localStorage.getItem('google_vision_api_key');
+        } catch (error) {
+            console.warn('Failed to get Google Vision API key from storage:', error);
+            return null;
+        }
+    }
+
+    /**
+     * Get icon for OCR source
+     * @param {string} source - OCR source identifier
+     * @returns {string} Icon for the source
+     */
+    getOCRSourceIcon(source) {
+        switch (source) {
+            case 'google_vision':
+            case 'google_vision_primary':
+                return '🌐';
+            case 'tesseract_fallback':
+            case 'tesseract_backup':
+                return '🔄';
+            case 'tesseract_only':
+            case 'tesseract':
+                return '🔧';
+            default:
+                return '📷';
+        }
+    }
+
+    /**
+     * Get display name for OCR source
+     * @param {string} source - OCR source identifier
+     * @returns {string} Display name for the source
+     */
+    getOCRSourceName(source) {
+        switch (source) {
+            case 'google_vision':
+            case 'google_vision_primary':
+                return 'Google Vision';
+            case 'tesseract_fallback':
+                return 'Local OCR (Fallback)';
+            case 'tesseract_backup':
+                return 'Local OCR (Backup)';
+            case 'tesseract_only':
+            case 'tesseract':
+                return 'Local OCR';
+            default:
+                return 'OCR Processing';
+        }
+    }
+
+    /**
      * Handle camera process button
      */
     async handleCameraProcess() {
@@ -1563,20 +1622,26 @@ class SpanishMenuCheater {
             // Show loading state
             this.showCameraSection('loading');
             
-            // Initialize OCR processor if needed
-            if (!this.ocrProcessor.isInitialized) {
-                await this.ocrProcessor.initialize((progress) => {
-                    this.updateCameraProgress(progress);
+            // Initialize hybrid OCR processor if needed
+            if (!this.hybridOCRProcessor.isInitialized) {
+                // Get Google Vision API key from local storage or settings
+                const googleVisionApiKey = this.getGoogleVisionApiKey();
+                
+                await this.hybridOCRProcessor.initialize({
+                    googleVisionApiKey: googleVisionApiKey,
+                    progressCallback: (progress) => {
+                        this.updateCameraProgress(progress);
+                    }
                 });
             }
             
-            // Process image with OCR
-            const ocrResult = await this.ocrProcessor.processImage(
+            // Process image with hybrid OCR (Google Vision first, Tesseract fallback)
+            const ocrResult = await this.hybridOCRProcessor.processImage(
                 this.state.camera.currentPhoto.dataUrl,
                 {
-                    preprocessImage: true,
-                    confidence: 30,
-                    maxTime: 30000
+                    confidence: 20,
+                    maxTime: 45000,
+                    useMultipleAttempts: false // Use single best method for speed
                 }
             );
             
@@ -1594,7 +1659,7 @@ class SpanishMenuCheater {
             
             // Show results
             if (textResult.suggestions.length > 0) {
-                this.showCameraResults(textResult);
+                this.showCameraResults(textResult, ocrResult.hybridProcessing);
             } else {
                 this.showCameraError('No Text Found', 'No Spanish menu items detected. Try a clearer photo or enter text manually.');
             }
@@ -1694,11 +1759,30 @@ class SpanishMenuCheater {
     /**
      * Show camera results
      */
-    showCameraResults(textResult) {
+    showCameraResults(textResult, hybridProcessing = null) {
         this.showCameraSection('results');
         
         if (this.elements.textSuggestions) {
             this.elements.textSuggestions.innerHTML = '';
+            
+            // Add OCR source information if available
+            if (hybridProcessing) {
+                const sourceInfo = document.createElement('div');
+                sourceInfo.className = 'ocr-source-info';
+                
+                const sourceIcon = this.getOCRSourceIcon(hybridProcessing.source);
+                const sourceName = this.getOCRSourceName(hybridProcessing.source);
+                const processingTime = Math.round(hybridProcessing.processingTime);
+                
+                sourceInfo.innerHTML = `
+                    <span class="ocr-source-badge">
+                        ${sourceIcon} ${sourceName} • ${processingTime}ms
+                    </span>
+                    ${hybridProcessing.fallbackReason ? `<span class="fallback-reason">${hybridProcessing.fallbackReason}</span>` : ''}
+                `;
+                
+                this.elements.textSuggestions.appendChild(sourceInfo);
+            }
             
             textResult.suggestions.forEach(suggestion => {
                 const chip = document.createElement('button');
