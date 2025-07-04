@@ -42,11 +42,28 @@ class GoogleVisionOCR {
             throw new Error('Google Vision OCR not initialized. Call initialize() first.');
         }
 
+        const {
+            preprocessImage = true,
+            maxImageSize = 4 * 1024 * 1024, // 4MB max for Google Vision
+            quality = 0.9,
+            format = 'jpeg'
+        } = options;
+
         const startTime = Date.now();
         
         try {
+            // Preprocess image for optimal API performance
+            let processedImageData = imageData;
+            if (preprocessImage) {
+                processedImageData = await this.optimizeImageForAPI(imageData, {
+                    maxSize: maxImageSize,
+                    quality: quality,
+                    format: format
+                });
+            }
+
             // Convert image to base64
-            const base64Image = await this.convertToBase64(imageData);
+            const base64Image = await this.convertToBase64(processedImageData);
             
             // Prepare API request
             const requestBody = {
@@ -80,6 +97,132 @@ class GoogleVisionOCR {
             console.error('❌ Google Vision OCR failed:', error.message);
             throw this.enhanceError(error);
         }
+    }
+
+    /**
+     * Optimize image for Google Vision API
+     * @param {Blob|File|string} imageData - Original image
+     * @param {Object} options - Optimization options
+     * @returns {Promise<string>} Optimized image as data URL
+     */
+    async optimizeImageForAPI(imageData, options = {}) {
+        const { maxSize, quality, format } = options;
+        
+        return new Promise(async (resolve, reject) => {
+            try {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Calculate optimal dimensions
+                    const { width, height, scale } = this.calculateOptimalSize(
+                        img.width, 
+                        img.height, 
+                        maxSize
+                    );
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    // Apply high-quality scaling
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+                    
+                    // Draw and enhance image
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // Apply subtle enhancements for better OCR
+                    this.enhanceImageForOCR(ctx, width, height);
+                    
+                    // Convert to optimized format
+                    const mimeType = `image/${format}`;
+                    const dataUrl = canvas.toDataURL(mimeType, quality);
+                    
+                    console.log(`📸 Image optimized: ${img.width}x${img.height} → ${width}x${height} (scale: ${scale.toFixed(2)}x)`);
+                    resolve(dataUrl);
+                };
+                
+                img.onerror = () => reject(new Error('Failed to load image for optimization'));
+                
+                // Load image from various sources
+                if (typeof imageData === 'string') {
+                    img.src = imageData;
+                } else if (imageData instanceof Blob || imageData instanceof File) {
+                    img.src = URL.createObjectURL(imageData);
+                } else {
+                    reject(new Error('Unsupported image data type'));
+                }
+            } catch (error) {
+                reject(new Error(`Image optimization failed: ${error.message}`));
+            }
+        });
+    }
+
+    /**
+     * Calculate optimal image size for API processing
+     * @param {number} originalWidth - Original image width
+     * @param {number} originalHeight - Original image height  
+     * @param {number} maxFileSize - Maximum file size in bytes
+     * @returns {Object} Optimal dimensions and scale factor
+     */
+    calculateOptimalSize(originalWidth, originalHeight, maxFileSize) {
+        // Google Vision works best with images between 1024-4096px on longest side
+        const minDimension = 1024;
+        const maxDimension = 4096;
+        
+        const longestSide = Math.max(originalWidth, originalHeight);
+        let scale = 1;
+        
+        if (longestSide < minDimension) {
+            // Upscale small images
+            scale = minDimension / longestSide;
+        } else if (longestSide > maxDimension) {
+            // Downscale large images
+            scale = maxDimension / longestSide;
+        }
+        
+        // Ensure dimensions are even numbers for better encoding
+        const width = Math.round(originalWidth * scale / 2) * 2;
+        const height = Math.round(originalHeight * scale / 2) * 2;
+        
+        return { width, height, scale };
+    }
+
+    /**
+     * Apply subtle image enhancements for better OCR accuracy
+     * @param {CanvasRenderingContext2D} ctx - Canvas context
+     * @param {number} width - Canvas width
+     * @param {number} height - Canvas height
+     */
+    enhanceImageForOCR(ctx, width, height) {
+        const imageData = ctx.getImageData(0, 0, width, height);
+        const data = imageData.data;
+        
+        // Apply minimal sharpening and contrast enhancement
+        for (let i = 0; i < data.length; i += 4) {
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+            
+            // Convert to grayscale for analysis
+            const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+            
+            // Subtle contrast enhancement (less aggressive than Tesseract preprocessing)
+            const enhanced = gray < 128 
+                ? Math.max(0, gray - 5)    // Darken dark areas slightly
+                : Math.min(255, gray + 5); // Brighten light areas slightly
+            
+            // Apply enhancement while preserving color information
+            const factor = enhanced / gray;
+            if (factor > 0 && factor < 2) { // Sanity check
+                data[i] = Math.min(255, r * factor);
+                data[i + 1] = Math.min(255, g * factor);
+                data[i + 2] = Math.min(255, b * factor);
+            }
+        }
+        
+        ctx.putImageData(imageData, 0, 0);
     }
 
     /**

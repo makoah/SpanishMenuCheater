@@ -59,3 +59,5 @@ Assume the primary reader of the PRD is a **junior developer**. Therefore, requi
 1. Do NOT start implementing the PRD
 2. Make sure to ask the user clarifying questions
 3. Take the user's answers to the clarifying questions and improve the PRD
+4. Ask again if you are not clear
+5 Always use a PRD if you are adding or changing features - you may also want one for bigger bugs
