@@ -2,7 +2,7 @@
  * Tests for SearchEngine - Fuzzy Search and Auto-suggest functionality
  */
 
-const { describe, test, expect, beforeEach, afterEach } = require('@jest/globals');
+import { describe, test, expect, beforeEach, afterEach } from '@jest/globals';
 
 // Mock DataManager for testing
 class MockDataManager {

@@ -2,7 +2,7 @@
  * Tests for main.js - Spanish Menu Cheater Main Application
  */
 
-const { describe, test, expect, beforeEach } = require('@jest/globals');
+import { describe, test, expect, beforeEach } from '@jest/globals';
 
 // Note: In a real environment, we'd import the class
 // For now, we'll test the concepts and structure
