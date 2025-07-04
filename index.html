@@ -62,6 +62,9 @@
                         maxlength="50"
                         data-testid="search-input"
                     >
+                    <button id="camera-btn" class="camera-btn" aria-label="Take photo of menu">
+                        📷
+                    </button>
                     <button id="clear-search" class="clear-search hidden" aria-label="Clear search">
                         ×
                     </button>
@@ -143,6 +146,69 @@
             </div>
         </section>
     </main>
+
+    <!-- Camera Modal -->
+    <div id="camera-modal" class="camera-modal hidden">
+        <div class="camera-overlay">
+            <div class="camera-container">
+                <div class="camera-header">
+                    <h3 class="camera-title">Take Photo of Menu</h3>
+                    <button id="camera-close" class="camera-close" aria-label="Close camera">
+                        ×
+                    </button>
+                </div>
+                
+                <div class="camera-content">
+                    <div class="camera-preview">
+                        <video id="camera-video" class="camera-video" autoplay playsinline muted>
+                            Your browser doesn't support camera access
+                        </video>
+                        <canvas id="camera-canvas" class="camera-canvas hidden"></canvas>
+                    </div>
+                    
+                    <div class="camera-controls">
+                        <button id="camera-capture" class="camera-capture-btn" aria-label="Capture photo">
+                            📸
+                        </button>
+                        <button id="camera-retake" class="camera-retake-btn hidden" aria-label="Retake photo">
+                            🔄
+                        </button>
+                        <button id="camera-process" class="camera-process-btn hidden" aria-label="Process photo">
+                            Process Text
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="camera-loading hidden">
+                    <div class="loading-spinner"></div>
+                    <p class="loading-text">Processing image...</p>
+                    <div class="loading-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                        <span class="progress-text">0%</span>
+                    </div>
+                </div>
+                
+                <div class="camera-results hidden">
+                    <h4>Detected Text:</h4>
+                    <div class="text-suggestions">
+                        <!-- Dynamic suggestions will be populated here -->
+                    </div>
+                </div>
+                
+                <div class="camera-error hidden">
+                    <div class="error-icon">⚠️</div>
+                    <h4 class="error-title">Camera Error</h4>
+                    <p class="error-message">Unable to access camera</p>
+                    <div class="error-actions">
+                        <button class="error-retry-btn">Try Again</button>
+                        <button class="error-manual-btn">Enter Manually</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer Section -->
     <footer class="app-footer">
