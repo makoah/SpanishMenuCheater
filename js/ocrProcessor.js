@@ -22,16 +22,15 @@ class OCRProcessor {
             }
 
             console.log('🔧 Initializing Tesseract OCR worker...');
-            this.worker = await Tesseract.createWorker();
-
-            await this.worker.loadLanguage('spa');
-            await this.worker.initialize('spa');
+            this.worker = await Tesseract.createWorker('spa', 1, {
+                // Initialize with LSTM engine mode during creation
+                corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@5.0.0/tesseract-core-simd.wasm.js'
+            });
             
             await this.worker.setParameters({
                 tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzáéíóúüñÁÉÍÓÚÜÑ0123456789€$.,;:()[]{}¿?¡!-_/\\ ',
                 tessedit_pageseg_mode: '6', // Single uniform block of text
                 preserve_interword_spaces: '1',
-                tessedit_ocr_engine_mode: '1', // Neural nets LSTM engine only
                 tessedit_enable_dict_correction: '1',
                 tessedit_enable_bigram_correction: '1',
                 classify_enable_learning: '0',
@@ -96,12 +95,11 @@ class OCRProcessor {
             let bestConfidence = 0;
 
             if (useMultipleAttempts) {
-                // Try multiple preprocessing approaches
+                // Try multiple preprocessing approaches (reduced for speed)
                 const attempts = [
                     { preprocess: false, label: 'original' },
                     { preprocess: true, label: 'enhanced' },
-                    { preprocess: 'high_contrast', label: 'high_contrast' },
-                    { preprocess: 'denoise', label: 'denoised' }
+                    { preprocess: 'high_contrast', label: 'high_contrast' }
                 ];
 
                 for (const attempt of attempts) {
@@ -111,14 +109,12 @@ class OCRProcessor {
                             processedImage = await this.preprocessImage(imageData);
                         } else if (attempt.preprocess === 'high_contrast') {
                             processedImage = await this.preprocessImageHighContrast(imageData);
-                        } else if (attempt.preprocess === 'denoise') {
-                            processedImage = await this.preprocessImageDenoise(imageData);
                         }
 
                         const result = await Promise.race([
                             this.worker.recognize(processedImage),
                             new Promise((_, reject) => 
-                                setTimeout(() => reject(new Error('OCR timeout')), maxTime / attempts.length)
+                                setTimeout(() => reject(new Error('OCR timeout')), maxTime)
                             )
                         ]);
 
