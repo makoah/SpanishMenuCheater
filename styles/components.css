@@ -199,7 +199,6 @@
   width: 100%;
   height: var(--search-input-height);
   padding: var(--space-sm) var(--space-md);
-  padding-left: 3rem; /* Space for camera button */
   padding-right: 2.5rem; /* Space for clear button */
   font-family: var(--font-family-primary);
   font-size: var(--font-size-base);
@@ -267,54 +266,72 @@
   transform: translateY(-50%) scale(0.95);
 }
 
-/* Camera Button */
-.camera-btn {
-  position: absolute;
-  left: var(--space-sm);
-  top: 50%;
-  transform: translateY(-50%);
-  width: 2rem;
-  height: 2rem;
-  background: var(--color-primary);
-  color: var(--color-text-inverse);
-  border: none;
-  border-radius: var(--radius-md);
-  font-size: 1.1rem;
-  cursor: pointer;
+/* Camera Scan Section */
+.camera-scan-section {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-sm);
+}
+
+.camera-scan-btn {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-surface-alt);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
   transition: all var(--transition-fast);
-  z-index: 1;
   
   /* Mobile optimizations */
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
   min-height: 44px;
-  min-width: 44px;
 }
 
-.camera-btn:hover {
-  background: var(--color-interactive-hover);
-  transform: translateY(-50%) scale(1.05);
+.camera-scan-btn:hover {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  border-color: var(--color-primary);
+  transform: scale(1.02);
 }
 
-.camera-btn:active {
-  transform: translateY(-50%) scale(0.95);
-  background: var(--color-interactive-active);
+.camera-scan-btn:active {
+  transform: scale(0.98);
 }
 
-.camera-btn:disabled {
+.camera-scan-btn:disabled {
   background: var(--color-interactive-disabled);
+  color: var(--color-text-disabled);
   cursor: not-allowed;
-  transform: translateY(-50%);
+  transform: none;
+}
+
+.camera-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.camera-text {
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
 }
 
 @media (max-width: 768px) {
-  .camera-btn {
-    width: 2.2rem;
-    height: 2.2rem;
-    font-size: 1.2rem;
+  .camera-scan-btn {
+    padding: var(--space-sm) var(--space-lg);
+  }
+  
+  .camera-icon {
+    font-size: 1.3rem;
+  }
+  
+  .camera-text {
+    font-size: var(--font-size-base);
   }
 }
 
