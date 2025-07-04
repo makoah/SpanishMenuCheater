@@ -383,11 +383,15 @@ class SpanishMenuCheater {
         // Handle search
         if (query.length > 0) {
             // Show autocomplete suggestions for short queries, search for longer ones
-            if (query.length < 3) {
-                // Show autocomplete suggestions for short queries
+            if (query.length <= 2) {
+                // Show autocomplete suggestions for 1-2 character queries
                 this.hideAllSections();
                 this.showWelcomeMessage();
                 this.showAutocompleteSuggestions(query);
+            } else if (query.length === 3) {
+                // Show both suggestions and search results for 3 character queries
+                this.showAutocompleteSuggestions(query);
+                this.performSearch(query);
             } else {
                 // Hide suggestions and perform full search for longer queries
                 this.hideSuggestions();
@@ -1027,10 +1031,20 @@ class SpanishMenuCheater {
      * Show autocomplete suggestions (only when no results are shown)
      */
     showAutocompleteSuggestions(query) {
-        if (!this.elements.suggestions || !this.searchEngine) return;
+        if (!this.elements.suggestions || !this.searchEngine) {
+            console.log('🔍 Autocomplete blocked: suggestions element or searchEngine missing');
+            return;
+        }
+        
+        if (!this.isDataLoaded) {
+            console.log('🔍 Autocomplete blocked: data not loaded yet');
+            return;
+        }
         
         try {
+            console.log(`🔍 Getting autocomplete suggestions for: "${query}"`);
             const suggestions = this.searchEngine.getAutocompleteSuggestions(query, 5);
+            console.log(`🔍 Found ${suggestions.length} suggestions:`, suggestions);
             
             // Clear previous suggestions
             this.elements.suggestions.innerHTML = '';
