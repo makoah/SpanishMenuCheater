@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCR Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; }
+        .result { background: #f5f5f5; padding: 10px; margin: 10px 0; }
+        button { padding: 10px 20px; margin: 5px; }
+        img { max-width: 300px; height: auto; }
+    </style>
+</head>
+<body>
+    <h1>OCR Test with Sample Images</h1>
+    
+    <div class="test-section">
+        <h2>Sample Images</h2>
+        <div>
+            <h3>IMG_8947.jpg (Printed Menu)</h3>
+            <img src="sample/IMG_8947.jpg" alt="Printed Menu">
+            <button onclick="testOCR('sample/IMG_8947.jpg', 'printed')">Test OCR</button>
+            <div id="result-IMG_8947" class="result"></div>
+        </div>
+        
+        <div>
+            <h3>IMG_8768.jpg (Handwritten Chalkboard)</h3>
+            <img src="sample/IMG_8768.jpg" alt="Handwritten Chalkboard">
+            <button onclick="testOCR('sample/IMG_8768.jpg', 'handwritten')">Test OCR</button>
+            <div id="result-IMG_8768" class="result"></div>
+        </div>
+        
+        <div>
+            <h3>IMG_8289.jpg (Restaurant Board)</h3>
+            <img src="sample/IMG_8289.jpg" alt="Restaurant Board">
+            <button onclick="testOCR('sample/IMG_8289.jpg', 'board')">Test OCR</button>
+            <div id="result-IMG_8289" class="result"></div>
+        </div>
+        
+        <div>
+            <h3>IMG_8203.jpg (Angled/Reflection)</h3>
+            <img src="sample/IMG_8203.jpg" alt="Angled Menu">
+            <button onclick="testOCR('sample/IMG_8203.jpg', 'angled')">Test OCR</button>
+            <div id="result-IMG_8203" class="result"></div>
+        </div>
+    </div>
+
+    <!-- Load Tesseract.js -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.5/dist/tesseract.min.js"></script>
+    
+    <!-- Load our modules -->
+    <script type="module">
+        import OCRProcessor from './js/ocrProcessor.js';
+        import TextProcessor from './js/textProcessor.js';
+        
+        window.ocrProcessor = new OCRProcessor();
+        window.textProcessor = new TextProcessor();
+        
+        window.testOCR = async function(imagePath, type) {
+            const fileName = imagePath.split('/')[1].replace('.jpg', '');
+            const resultDiv = document.getElementById(`result-${fileName}`);
+            if (!resultDiv) {
+                console.error(`Result div not found for ${fileName}`);
+                return;
+            }
+            resultDiv.innerHTML = '<p>🔄 Processing...</p>';
+            
+            try {
+                console.log(`🧪 Testing OCR on ${imagePath} (${type})`);
+                
+                // Initialize OCR processor
+                await window.ocrProcessor.initialize((progress) => {
+                    resultDiv.innerHTML = `<p>🔄 ${progress.message}</p>`;
+                });
+                
+                // Load image as blob
+                const response = await fetch(imagePath);
+                const imageBlob = await response.blob();
+                
+                // Process with OCR
+                console.log('🔄 Starting OCR processing...');
+                const ocrResult = await window.ocrProcessor.processImage(imageBlob, 0.7);
+                console.log('✅ OCR Result:', ocrResult);
+                
+                if (!ocrResult || (!ocrResult.text && !ocrResult.fullText)) {
+                    throw new Error('OCR processing returned no text');
+                }
+                
+                // Normalize the result to have .text property
+                if (ocrResult.fullText && !ocrResult.text) {
+                    ocrResult.text = ocrResult.fullText;
+                }
+                
+                // Process text with TextProcessor
+                console.log('🔄 Processing text with TextProcessor...');
+                const textResult = window.textProcessor.processOCRText(ocrResult);
+                console.log('✅ Text Result:', textResult);
+                
+                const spanishWords = textResult && textResult.suggestions ? 
+                    textResult.suggestions.map(s => s.text) : [];
+                
+                // Display results
+                resultDiv.innerHTML = `
+                    <h4>✅ OCR Results for ${type} menu:</h4>
+                    <p><strong>Confidence:</strong> ${ocrResult.confidence.toFixed(1)}%</p>
+                    <p><strong>Raw Text:</strong></p>
+                    <pre>${ocrResult.text}</pre>
+                    <p><strong>Spanish Words Found:</strong></p>
+                    <p>${spanishWords.length > 0 ? spanishWords.join(', ') : 'No Spanish words detected'}</p>
+                `;
+                
+                console.log(`✅ OCR test completed for ${imagePath}:`, {
+                    confidence: ocrResult.confidence,
+                    textLength: ocrResult.text.length,
+                    spanishWords: spanishWords.length
+                });
+                
+            } catch (error) {
+                console.error(`❌ OCR test failed for ${imagePath}:`, error);
+                resultDiv.innerHTML = `<p>❌ Error: ${error.message}</p>`;
+            }
+        };
+        
+        console.log('🧪 OCR test page loaded. Click buttons to test each image.');
+    </script>
+</body>
+</html>

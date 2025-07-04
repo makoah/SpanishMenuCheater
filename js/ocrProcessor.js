@@ -16,21 +16,25 @@ class OCRProcessor {
         this.progressCallback = progressCallback;
 
         try {
-            this.worker = await Tesseract.createWorker({
-                logger: (m) => this.handleProgress(m)
-            });
+            // Check if Tesseract is available
+            if (typeof Tesseract === 'undefined') {
+                throw new Error('Tesseract.js not loaded. Please ensure the CDN script is included.');
+            }
+
+            console.log('🔧 Initializing Tesseract OCR worker...');
+            this.worker = await Tesseract.createWorker();
 
             await this.worker.loadLanguage('spa');
             await this.worker.initialize('spa');
             
             await this.worker.setParameters({
                 tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzáéíóúüñÁÉÍÓÚÜÑ0123456789€$.,;:()[]{}¿?¡!-_/\\ ',
-                tessedit_pageseg_mode: Tesseract.PSM.AUTO,
+                tessedit_pageseg_mode: '3', // PSM.AUTO equivalent
                 preserve_interword_spaces: '1'
             });
 
             this.isInitialized = true;
-            console.log('OCR processor initialized successfully');
+            console.log('✅ OCR processor initialized successfully');
         } catch (error) {
             console.error('Failed to initialize OCR processor:', error);
             throw new Error(`OCR initialization failed: ${error.message}`);

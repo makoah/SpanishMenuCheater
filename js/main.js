@@ -10,9 +10,9 @@ import { DataManager } from './dataManager.js';
 import { SearchEngine } from './searchEngine.js';
 import { UpdateManager } from './updateManager.js';
 import { PreferencesManager } from './preferencesManager.js';
-// import CameraManager from './cameraManager.js';
-// import OCRProcessor from './ocrProcessor.js';
-// import TextProcessor from './textProcessor.js';
+import CameraManager from './cameraManager.js';
+import OCRProcessor from './ocrProcessor.js';
+import TextProcessor from './textProcessor.js';
 // import { UIController } from './uiController.js';
 // import { LanguageManager } from './languageManager.js';
 // import { PWAManager } from './pwaManager.js';
@@ -256,10 +256,10 @@ class SpanishMenuCheater {
         // Initialize PreferencesManager
         this.preferencesManager = new PreferencesManager();
         
-        // Initialize Camera modules (temporarily disabled)
-        // this.cameraManager = new CameraManager();
-        // this.ocrProcessor = new OCRProcessor();
-        // this.textProcessor = new TextProcessor();
+        // Initialize Camera modules
+        this.cameraManager = new CameraManager();
+        this.ocrProcessor = new OCRProcessor();
+        this.textProcessor = new TextProcessor();
         
         // TODO: Initialize other modules when they are created
         // this.uiController = new UIController();
