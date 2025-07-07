@@ -417,6 +417,101 @@
         </div>
     </div>
 
+    <!-- Menu Discovery Results Modal -->
+    <div id="menu-discovery-modal" class="menu-discovery-modal hidden">
+        <div class="discovery-overlay">
+            <div class="discovery-container">
+                <div class="discovery-header">
+                    <h3 class="discovery-title">Menu Items Found</h3>
+                    <button id="discovery-close" class="discovery-close" aria-label="Close menu discovery">
+                        ×
+                    </button>
+                </div>
+                
+                <div class="discovery-content">
+                    <!-- OCR Source Info -->
+                    <div class="ocr-source-summary">
+                        <div class="source-badge">
+                            <span class="source-icon">🌐</span>
+                            <span class="source-text">Analyzed with Google Vision</span>
+                            <span class="source-time">257ms</span>
+                        </div>
+                    </div>
+
+                    <!-- Item Categories -->
+                    <div class="discovery-sections">
+                        <!-- You May Like Section -->
+                        <section class="discovery-section recommended-section">
+                            <div class="section-header">
+                                <h4 class="section-title">
+                                    <span class="section-icon">😋</span>
+                                    You May Like
+                                </h4>
+                                <span class="section-count" id="recommended-count">0 items</span>
+                            </div>
+                            <div id="recommended-items" class="item-grid">
+                                <!-- Recommended items will be populated here -->
+                            </div>
+                        </section>
+
+                        <!-- All Found Items Section -->
+                        <section class="discovery-section all-items-section">
+                            <div class="section-header">
+                                <h4 class="section-title">
+                                    <span class="section-icon">📋</span>
+                                    All Menu Items Found
+                                </h4>
+                                <span class="section-count" id="all-items-count">0 items</span>
+                            </div>
+                            <div id="all-found-items" class="item-grid">
+                                <!-- All found items will be populated here -->
+                            </div>
+                        </section>
+
+                        <!-- Items to Avoid Section -->
+                        <section class="discovery-section avoid-section">
+                            <div class="section-header">
+                                <h4 class="section-title">
+                                    <span class="section-icon">⚠️</span>
+                                    Things You May NOT Like
+                                </h4>
+                                <span class="section-count" id="avoid-count">0 items</span>
+                            </div>
+                            <div id="avoid-items" class="item-grid">
+                                <!-- Items to avoid will be populated here -->
+                            </div>
+                        </section>
+
+                        <!-- Unrecognized Text Section -->
+                        <section class="discovery-section unrecognized-section">
+                            <div class="section-header">
+                                <h4 class="section-title">
+                                    <span class="section-icon">❓</span>
+                                    Unrecognized Text
+                                </h4>
+                                <span class="section-count" id="unrecognized-count">0 items</span>
+                            </div>
+                            <div id="unrecognized-text" class="unrecognized-chips">
+                                <!-- Unrecognized text chips will be populated here -->
+                            </div>
+                        </section>
+                    </div>
+                </div>
+                
+                <div class="discovery-footer">
+                    <div class="footer-actions">
+                        <button id="discovery-retake" class="discovery-btn secondary">
+                            📷 Retake Photo
+                        </button>
+                        <button id="discovery-search-more" class="discovery-btn primary">
+                            🔍 Search More Items
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer Section -->
     <footer class="app-footer">
         <div class="footer-content">

@@ -69,7 +69,20 @@ class SpanishMenuCheater {
             cameraLoading: null,
             cameraResults: null,
             cameraError: null,
-            textSuggestions: null
+            textSuggestions: null,
+            // Menu discovery modal elements
+            menuDiscoveryModal: null,
+            discoveryClose: null,
+            recommendedItems: null,
+            allFoundItems: null,
+            avoidItems: null,
+            unrecognizedText: null,
+            discoveryRetake: null,
+            discoverySearchMore: null,
+            recommendedCount: null,
+            allItemsCount: null,
+            avoidCount: null,
+            unrecognizedCount: null
         };
         
         // Application state
@@ -201,7 +214,20 @@ class SpanishMenuCheater {
             cameraLoading: document.querySelector('.camera-loading'),
             cameraResults: document.querySelector('.camera-results'),
             cameraError: document.querySelector('.camera-error'),
-            textSuggestions: document.querySelector('.text-suggestions')
+            textSuggestions: document.querySelector('.text-suggestions'),
+            // Menu discovery modal elements
+            menuDiscoveryModal: document.getElementById('menu-discovery-modal'),
+            discoveryClose: document.getElementById('discovery-close'),
+            recommendedItems: document.getElementById('recommended-items'),
+            allFoundItems: document.getElementById('all-found-items'),
+            avoidItems: document.getElementById('avoid-items'),
+            unrecognizedText: document.getElementById('unrecognized-text'),
+            discoveryRetake: document.getElementById('discovery-retake'),
+            discoverySearchMore: document.getElementById('discovery-search-more'),
+            recommendedCount: document.getElementById('recommended-count'),
+            allItemsCount: document.getElementById('all-items-count'),
+            avoidCount: document.getElementById('avoid-count'),
+            unrecognizedCount: document.getElementById('unrecognized-count')
         };
         
         // Validate critical elements only - don't fail on missing optional elements
@@ -386,6 +412,25 @@ class SpanishMenuCheater {
         }
         if (this.elements.cameraProcess) {
             this.elements.cameraProcess.addEventListener('click', this.handleCameraProcess.bind(this));
+        }
+        
+        // Menu discovery modal event listeners
+        if (this.elements.discoveryClose) {
+            this.elements.discoveryClose.addEventListener('click', this.handleDiscoveryClose.bind(this));
+        }
+        if (this.elements.discoveryRetake) {
+            this.elements.discoveryRetake.addEventListener('click', this.handleDiscoveryRetake.bind(this));
+        }
+        if (this.elements.discoverySearchMore) {
+            this.elements.discoverySearchMore.addEventListener('click', this.handleDiscoverySearchMore.bind(this));
+        }
+        // Close modal when clicking outside of it
+        if (this.elements.menuDiscoveryModal) {
+            this.elements.menuDiscoveryModal.addEventListener('click', (event) => {
+                if (event.target === this.elements.menuDiscoveryModal) {
+                    this.handleDiscoveryClose();
+                }
+            });
         }
         
         // Language toggle event listener
@@ -1857,43 +1902,11 @@ class SpanishMenuCheater {
      * Show camera results
      */
     showCameraResults(textResult, hybridProcessing = null) {
-        this.showCameraSection('results');
+        // Close camera modal first
+        this.closeCameraModal();
         
-        if (this.elements.textSuggestions) {
-            this.elements.textSuggestions.innerHTML = '';
-            
-            // Add OCR source information if available
-            if (hybridProcessing) {
-                const sourceInfo = document.createElement('div');
-                sourceInfo.className = 'ocr-source-info';
-                
-                const sourceIcon = this.getOCRSourceIcon(hybridProcessing.source);
-                const sourceName = this.getOCRSourceName(hybridProcessing.source);
-                const processingTime = Math.round(hybridProcessing.processingTime);
-                
-                sourceInfo.innerHTML = `
-                    <span class="ocr-source-badge">
-                        ${sourceIcon} ${sourceName} • ${processingTime}ms
-                    </span>
-                    ${hybridProcessing.fallbackReason ? `<span class="fallback-reason">${hybridProcessing.fallbackReason}</span>` : ''}
-                `;
-                
-                this.elements.textSuggestions.appendChild(sourceInfo);
-            }
-            
-            textResult.suggestions.forEach(suggestion => {
-                const chip = document.createElement('button');
-                chip.className = 'suggestion-chip';
-                chip.textContent = suggestion.text;
-                chip.title = `Confidence: ${suggestion.confidence}% | Type: ${suggestion.type}`;
-                
-                chip.addEventListener('click', () => {
-                    this.handleSuggestionClick(suggestion.text);
-                });
-                
-                this.elements.textSuggestions.appendChild(chip);
-            });
-        }
+        // Open menu discovery modal with results
+        this.openMenuDiscoveryModal(textResult, hybridProcessing);
     }
     
     /**
@@ -1989,6 +2002,303 @@ class SpanishMenuCheater {
      */
     getState() {
         return { ...this.state };
+    }
+    
+    /**
+     * Open menu discovery modal with OCR results
+     */
+    openMenuDiscoveryModal(textResult, hybridProcessing = null) {
+        if (!this.elements.menuDiscoveryModal) {
+            console.error('❌ Menu discovery modal not found');
+            return;
+        }
+        
+        // Update OCR source information
+        this.updateOCRSourceInfo(hybridProcessing);
+        
+        // Categorize menu items
+        const categorizedItems = this.categorizeMenuItems(textResult.suggestions);
+        
+        // Populate sections
+        this.populateRecommendedItems(categorizedItems.recommended);
+        this.populateAllFoundItems(categorizedItems.all);
+        this.populateAvoidItems(categorizedItems.avoid);
+        this.populateUnrecognizedText(textResult.unrecognizedWords || []);
+        
+        // Update counts
+        this.updateSectionCounts(categorizedItems);
+        
+        // Show modal
+        this.elements.menuDiscoveryModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        
+        console.log('📋 Menu discovery modal opened');
+    }
+    
+    /**
+     * Close menu discovery modal
+     */
+    closeMenuDiscoveryModal() {
+        if (this.elements.menuDiscoveryModal) {
+            this.elements.menuDiscoveryModal.classList.add('hidden');
+            document.body.style.overflow = ''; // Restore scrolling
+            console.log('❌ Menu discovery modal closed');
+        }
+    }
+    
+    /**
+     * Update OCR source information display
+     */
+    updateOCRSourceInfo(hybridProcessing) {
+        const sourceInfo = document.querySelector('.ocr-source-summary');
+        if (sourceInfo && hybridProcessing) {
+            const sourceIcon = this.getOCRSourceIcon(hybridProcessing.source);
+            const sourceName = this.getOCRSourceName(hybridProcessing.source);
+            const processingTime = Math.round(hybridProcessing.processingTime);
+            
+            sourceInfo.innerHTML = `
+                <div class="source-badge">
+                    <span class="source-icon">${sourceIcon}</span>
+                    <span class="source-text">Analyzed with ${sourceName}</span>
+                    <span class="source-time">${processingTime}ms</span>
+                </div>
+                ${hybridProcessing.fallbackReason ? `<div class="fallback-info">${hybridProcessing.fallbackReason}</div>` : ''}
+            `;
+        }
+    }
+    
+    /**
+     * Categorize menu items into recommended, avoid, and neutral
+     */
+    categorizeMenuItems(suggestions) {
+        const recommended = [];
+        const avoid = [];
+        const all = [];
+        
+        suggestions.forEach(suggestion => {
+            all.push(suggestion);
+            
+            // Simple categorization logic - can be enhanced with user preferences
+            const menuItem = this.getMenuItemDetails(suggestion.text);
+            
+            if (menuItem) {
+                // Check dietary restrictions and preferences
+                if (this.isRecommended(menuItem)) {
+                    recommended.push({ ...suggestion, menuItem });
+                } else if (this.shouldAvoid(menuItem)) {
+                    avoid.push({ ...suggestion, menuItem });
+                }
+            }
+        });
+        
+        return { recommended, avoid, all };
+    }
+    
+    /**
+     * Check if menu item is recommended based on user preferences
+     */
+    isRecommended(menuItem) {
+        // This is a simplified version - in a real app this would check user preferences
+        const commonRecommendations = [
+            'paella', 'gazpacho', 'tortilla', 'jamón', 'croquetas', 'tapas'
+        ];
+        
+        return commonRecommendations.some(item => 
+            menuItem.spanish.toLowerCase().includes(item) ||
+            menuItem.english.toLowerCase().includes(item)
+        );
+    }
+    
+    /**
+     * Check if menu item should be avoided
+     */
+    shouldAvoid(menuItem) {
+        // This is a simplified version - in a real app this would check dietary restrictions
+        const commonAvoidances = [
+            'picante', 'spicy', 'muy condimentado', 'heavily spiced'
+        ];
+        
+        return commonAvoidances.some(term => 
+            menuItem.description.toLowerCase().includes(term)
+        );
+    }
+    
+    /**
+     * Get menu item details from the database
+     */
+    getMenuItemDetails(text) {
+        // Use the existing search functionality to find menu item details
+        if (this.searchEngine && this.searchEngine.performSearch) {
+            const results = this.searchEngine.performSearch(text, { maxResults: 1 });
+            return results.length > 0 ? results[0] : null;
+        }
+        
+        // Fallback: create basic item structure
+        return {
+            spanish: text,
+            english: text, // Would need translation in real app
+            description: 'Menu item detected from image',
+            category: 'detected',
+            tags: []
+        };
+    }
+    
+    /**
+     * Populate recommended items section
+     */
+    populateRecommendedItems(items) {
+        if (!this.elements.recommendedItems) return;
+        
+        this.elements.recommendedItems.innerHTML = '';
+        
+        items.forEach(item => {
+            const card = this.createMenuItemCard(item, 'recommended');
+            this.elements.recommendedItems.appendChild(card);
+        });
+    }
+    
+    /**
+     * Populate all found items section
+     */
+    populateAllFoundItems(items) {
+        if (!this.elements.allFoundItems) return;
+        
+        this.elements.allFoundItems.innerHTML = '';
+        
+        items.forEach(item => {
+            const card = this.createMenuItemCard(item, 'neutral');
+            this.elements.allFoundItems.appendChild(card);
+        });
+    }
+    
+    /**
+     * Populate items to avoid section
+     */
+    populateAvoidItems(items) {
+        if (!this.elements.avoidItems) return;
+        
+        this.elements.avoidItems.innerHTML = '';
+        
+        items.forEach(item => {
+            const card = this.createMenuItemCard(item, 'avoid');
+            this.elements.avoidItems.appendChild(card);
+        });
+    }
+    
+    /**
+     * Populate unrecognized text section
+     */
+    populateUnrecognizedText(words) {
+        if (!this.elements.unrecognizedText) return;
+        
+        this.elements.unrecognizedText.innerHTML = '';
+        
+        words.forEach(word => {
+            const chip = document.createElement('div');
+            chip.className = 'unrecognized-chip';
+            chip.textContent = word.text || word;
+            chip.title = `Click to search for "${word.text || word}"`;
+            
+            chip.addEventListener('click', () => {
+                this.searchUnrecognizedText(word.text || word);
+            });
+            
+            this.elements.unrecognizedText.appendChild(chip);
+        });
+    }
+    
+    /**
+     * Create a menu item card element
+     */
+    createMenuItemCard(item, category) {
+        const card = document.createElement('div');
+        card.className = `menu-item-card ${category}`;
+        
+        const menuItem = item.menuItem || this.getMenuItemDetails(item.text);
+        
+        card.innerHTML = `
+            <div class="item-header">
+                <h5 class="item-name">${item.text}</h5>
+                <span class="item-confidence">${item.confidence}%</span>
+            </div>
+            ${menuItem.english !== item.text ? `<div class="item-translation">${menuItem.english}</div>` : ''}
+            <div class="item-description">${menuItem.description || 'Menu item detected from image'}</div>
+            ${menuItem.tags && menuItem.tags.length > 0 ? `
+                <div class="item-tags">
+                    ${menuItem.tags.map(tag => `<span class="item-tag ${tag.type || ''}">${tag.name || tag}</span>`).join('')}
+                </div>
+            ` : ''}
+            <div class="item-actions">
+                <button class="item-btn" onclick="app.searchForItem('${item.text}')">View Details</button>
+                <button class="item-btn primary" onclick="app.searchForItem('${item.text}'); app.closeMenuDiscoveryModal();">Search This</button>
+            </div>
+        `;
+        
+        return card;
+    }
+    
+    /**
+     * Update section counts
+     */
+    updateSectionCounts(categorizedItems) {
+        if (this.elements.recommendedCount) {
+            this.elements.recommendedCount.textContent = `${categorizedItems.recommended.length} items`;
+        }
+        if (this.elements.allItemsCount) {
+            this.elements.allItemsCount.textContent = `${categorizedItems.all.length} items`;
+        }
+        if (this.elements.avoidCount) {
+            this.elements.avoidCount.textContent = `${categorizedItems.avoid.length} items`;
+        }
+        if (this.elements.unrecognizedCount) {
+            // This would be updated separately when unrecognized text is populated
+        }
+    }
+    
+    /**
+     * Handle discovery modal close button
+     */
+    handleDiscoveryClose() {
+        this.closeMenuDiscoveryModal();
+    }
+    
+    /**
+     * Handle discovery retake photo button
+     */
+    handleDiscoveryRetake() {
+        this.closeMenuDiscoveryModal();
+        // Reopen camera modal for new photo
+        this.openCameraModal();
+    }
+    
+    /**
+     * Handle discovery search more button
+     */
+    handleDiscoverySearchMore() {
+        this.closeMenuDiscoveryModal();
+        // Focus on search input for manual search
+        if (this.elements.searchInput) {
+            this.elements.searchInput.focus();
+        }
+    }
+    
+    /**
+     * Search for a specific item (called from menu item cards)
+     */
+    searchForItem(text) {
+        if (this.elements.searchInput) {
+            this.elements.searchInput.value = text;
+            this.state.currentQuery = text;
+            this.performSearch(text);
+        }
+    }
+    
+    /**
+     * Search for unrecognized text
+     */
+    searchUnrecognizedText(text) {
+        this.closeMenuDiscoveryModal();
+        this.searchForItem(text);
     }
     
     isReady() {
