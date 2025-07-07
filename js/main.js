@@ -178,6 +178,7 @@ class SpanishMenuCheater {
             searchInput: document.getElementById('search-input'),
             clearButton: document.getElementById('clear-search'),
             shareButton: document.getElementById('share-btn'),
+            settingsButton: document.getElementById('settings-btn'),
             cameraButton: document.getElementById('camera-btn'),
             languageToggle: document.getElementById('language-toggle'),
             offlineIndicator: document.getElementById('offline-indicator'),
@@ -347,6 +348,14 @@ class SpanishMenuCheater {
         // Share button event listener
         if (this.elements.shareButton) {
             this.elements.shareButton.addEventListener('click', this.handleShareButton.bind(this));
+        }
+        
+        // Settings button event listener
+        if (this.elements.settingsButton) {
+            this.elements.settingsButton.addEventListener('click', this.handleSettingsClick.bind(this));
+            console.log('⚙️ Settings button event listener attached successfully');
+        } else {
+            console.warn('❌ Settings button not found - settings functionality disabled');
         }
         
         // Camera button event listener
@@ -580,6 +589,36 @@ class SpanishMenuCheater {
                 console.error('❌ Error sharing app:', error);
                 this.showShareFeedback('Unable to share. Please try again.');
             }
+        }
+    }
+
+    /**
+     * Handle settings button click
+     */
+    async handleSettingsClick() {
+        try {
+            console.log('⚙️ Settings button clicked');
+            
+            // Initialize settings manager if needed
+            if (this.settingsManager && !this.settingsManager.isInitialized) {
+                await this.settingsManager.initialize({
+                    usageTracker: this.usageTracker,
+                    googleVisionOCR: this.hybridOCRProcessor ? this.hybridOCRProcessor.googleVisionOCR : null
+                });
+            }
+            
+            // Open settings modal
+            if (this.settingsManager) {
+                this.settingsManager.openModal();
+            } else {
+                console.error('❌ Settings manager not available');
+                // Fallback: show simple alert
+                alert('Settings are temporarily unavailable. Please refresh the page and try again.');
+            }
+            
+        } catch (error) {
+            console.error('❌ Error opening settings:', error);
+            alert('Unable to open settings. Please try again.');
         }
     }
 
