@@ -14,6 +14,8 @@ import CameraManager from './cameraManager.js';
 import OCRProcessor from './ocrProcessor.js';
 import TextProcessor from './textProcessor.js';
 import HybridOCRProcessor from './hybridOCRProcessor.js';
+import SettingsManager from './settingsManager.js';
+import UsageTracker from './usageTracker.js';
 // import { UIController } from './uiController.js';
 // import { LanguageManager } from './languageManager.js';
 // import { PWAManager } from './pwaManager.js';
@@ -37,6 +39,8 @@ class SpanishMenuCheater {
         this.ocrProcessor = null; // Legacy OCR processor (Tesseract.js only)
         this.hybridOCRProcessor = null; // New hybrid OCR processor
         this.textProcessor = null;
+        this.settingsManager = null; // OCR settings interface
+        this.usageTracker = null; // API usage tracking
         this.uiController = null;
         this.languageManager = null;
         this.pwaManager = null;
@@ -246,30 +250,41 @@ class SpanishMenuCheater {
     async initializeModules() {
         console.log('🔧 Initializing modules...');
         
-        // Initialize DataManager
-        this.dataManager = new DataManager();
-        
-        // Initialize SearchEngine (after DataManager)
-        this.searchEngine = new SearchEngine(this.dataManager);
-        
-        // Initialize UpdateManager
-        this.updateManager = new UpdateManager();
-        
-        // Initialize PreferencesManager
-        this.preferencesManager = new PreferencesManager();
-        
-        // Initialize Camera modules
-        this.cameraManager = new CameraManager();
-        this.ocrProcessor = new OCRProcessor(); // Keep legacy for backwards compatibility
-        this.hybridOCRProcessor = new HybridOCRProcessor(); // New hybrid system
-        this.textProcessor = new TextProcessor();
-        
-        // TODO: Initialize other modules when they are created
-        // this.uiController = new UIController();
-        // this.languageManager = new LanguageManager();
-        // this.pwaManager = new PWAManager();
-        
-        console.log('📦 Modules initialized');
+        try {
+            // Initialize DataManager
+            this.dataManager = new DataManager();
+            
+            // Initialize SearchEngine (after DataManager)
+            this.searchEngine = new SearchEngine(this.dataManager);
+            
+            // Initialize UpdateManager
+            this.updateManager = new UpdateManager();
+            
+            // Initialize PreferencesManager
+            this.preferencesManager = new PreferencesManager();
+            
+            // Initialize Camera modules
+            this.cameraManager = new CameraManager();
+            this.textProcessor = new TextProcessor();
+            
+            // Initialize OCR settings and usage tracking
+            this.usageTracker = new UsageTracker();
+            this.settingsManager = new SettingsManager();
+            
+            // Initialize OCR processors (but don't await initialization here to avoid blocking)
+            this.ocrProcessor = new OCRProcessor(); // Keep legacy for backwards compatibility
+            this.hybridOCRProcessor = new HybridOCRProcessor(); // New hybrid system
+            
+            // TODO: Initialize other modules when they are created
+            // this.uiController = new UIController();
+            // this.languageManager = new LanguageManager();
+            // this.pwaManager = new PWAManager();
+            
+            console.log('📦 Modules initialized');
+        } catch (error) {
+            console.error('❌ Module initialization error:', error);
+            // Continue with partial functionality instead of failing completely
+        }
     }
     
     /**
@@ -1622,6 +1637,24 @@ class SpanishMenuCheater {
             // Show loading state
             this.showCameraSection('loading');
             
+            // Initialize usage tracker if needed
+            if (!this.usageTracker.isInitialized) {
+                await this.usageTracker.initialize({
+                    monthlyLimit: 500,
+                    callbacks: {
+                        onUsageUpdate: (usage) => {
+                            console.log(`📊 Usage updated: ${usage.apiCalls}/${usage.settings.monthlyLimit} (${usage.percentage}%)`);
+                        },
+                        onWarning: (warning) => {
+                            console.warn(`⚠️ Usage warning: ${warning.percentage}% of monthly limit reached`);
+                        },
+                        onLimitReached: (info) => {
+                            console.error(`🚫 Usage limit reached: ${info.currentUsage}/${info.limit} API calls`);
+                        }
+                    }
+                });
+            }
+            
             // Initialize hybrid OCR processor if needed
             if (!this.hybridOCRProcessor.isInitialized) {
                 // Get Google Vision API key from local storage or settings
@@ -1629,9 +1662,18 @@ class SpanishMenuCheater {
                 
                 await this.hybridOCRProcessor.initialize({
                     googleVisionApiKey: googleVisionApiKey,
+                    usageTracker: this.usageTracker, // Pass usage tracker to hybrid processor
                     progressCallback: (progress) => {
                         this.updateCameraProgress(progress);
                     }
+                });
+            }
+            
+            // Initialize settings manager if needed (after hybrid OCR processor is ready)
+            if (!this.settingsManager.isInitialized) {
+                await this.settingsManager.initialize({
+                    usageTracker: this.usageTracker,
+                    googleVisionOCR: this.hybridOCRProcessor.googleVisionOCR
                 });
             }
             
@@ -1868,6 +1910,25 @@ class SpanishMenuCheater {
         };
     }
     
+    /**
+     * Get Google Vision API key from settings manager or localStorage
+     * @returns {string} API key or empty string
+     */
+    getGoogleVisionApiKey() {
+        try {
+            // Try to get from settings manager first
+            if (this.settingsManager) {
+                return this.settingsManager.getStoredApiKey();
+            }
+            
+            // Fallback to direct localStorage access
+            return localStorage.getItem('google_vision_api_key') || '';
+        } catch (error) {
+            console.warn('Failed to retrieve Google Vision API key:', error);
+            return '';
+        }
+    }
+
     /**
      * Public API methods for external access
      */

@@ -22,21 +22,31 @@ class OCRProcessor {
             }
 
             console.log('🔧 Initializing Tesseract OCR worker...');
-            this.worker = await Tesseract.createWorker('spa', 1, {
-                // Initialize with LSTM engine mode during creation
-                corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@5.0.0/tesseract-core-simd.wasm.js'
-            });
+            
+            // Try Spanish first, fallback to English if Spanish fails
+            try {
+                this.worker = await Tesseract.createWorker('spa', 1, {
+                    corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@5.0.0/tesseract-core-simd.wasm.js'
+                });
+                console.log('✅ Spanish OCR worker initialized successfully');
+            } catch (error) {
+                console.warn('⚠️ Spanish language pack failed, falling back to English:', error.message);
+                this.worker = await Tesseract.createWorker('eng', 1, {
+                    corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@5.0.0/tesseract-core-simd.wasm.js'
+                });
+                console.log('✅ English OCR worker initialized successfully');
+            }
             
             await this.worker.setParameters({
                 tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzáéíóúüñÁÉÍÓÚÜÑ0123456789€$.,;:()[]{}¿?¡!-_/\\ ',
-                tessedit_pageseg_mode: '6', // Single uniform block of text
+                tessedit_pageseg_mode: '1', // Automatic page segmentation with OSD  
                 preserve_interword_spaces: '1',
-                tessedit_enable_dict_correction: '1',
-                tessedit_enable_bigram_correction: '1',
+                tessedit_enable_dict_correction: '0', // Disable dict correction for better accuracy on menus
+                tessedit_enable_bigram_correction: '0', // Disable bigram correction
                 classify_enable_learning: '0',
-                classify_enable_adaptive_matcher: '1',
-                textord_really_old_xheight: '1',
-                segment_penalty_dict_nonword: '1.25',
+                classify_enable_adaptive_matcher: '0', // Disable adaptive matcher for consistency
+                textord_really_old_xheight: '0',
+                segment_penalty_dict_nonword: '0.5',
                 language_model_penalty_non_freq_dict_word: '0.1',
                 language_model_penalty_non_dict_word: '0.15'
             });
