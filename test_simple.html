@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple OCR Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .result { margin: 20px 0; padding: 15px; border: 1px solid #ccc; background: #f9f9f9; }
+        button { padding: 10px 20px; margin: 10px; }
+        input[type="file"] { margin: 10px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Simple OCR Test</h1>
+    
+    <div>
+        <input type="file" id="imageInput" accept="image/*">
+        <button onclick="processImage()">Process Image</button>
+    </div>
+    
+    <div id="status">Ready to process images...</div>
+    <div id="result" class="result" style="display: none;"></div>
+    
+    <h2>Quick Test Images</h2>
+    <button onclick="processTestImage('sample/IMG_8203.jpg')">Test IMG_8203 (Restaurant Menu)</button>
+    <button onclick="processTestImage('sample/IMG_8289.jpg')">Test IMG_8289 (Chalkboard)</button>
+    
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.2/dist/tesseract.min.js"></script>
+    <script>
+        let worker = null;
+        
+        async function initOCR() {
+            const status = document.getElementById('status');
+            
+            try {
+                status.textContent = 'Initializing OCR...';
+                
+                // Try Spanish first, fallback to English
+                try {
+                    worker = await Tesseract.createWorker('spa', 1);
+                    status.textContent = '✅ Spanish OCR ready';
+                } catch (error) {
+                    console.warn('Spanish failed, trying English:', error);
+                    worker = await Tesseract.createWorker('eng', 1);
+                    status.textContent = '✅ English OCR ready (Spanish unavailable)';
+                }
+                
+                // Set optimized parameters for menu text
+                await worker.setParameters({
+                    tessedit_pageseg_mode: '1', // Auto page segmentation
+                    preserve_interword_spaces: '1',
+                    tessedit_enable_dict_correction: '0',
+                    tessedit_enable_bigram_correction: '0'
+                });
+                
+            } catch (error) {
+                status.textContent = '❌ OCR initialization failed: ' + error.message;
+                console.error('OCR init error:', error);
+            }
+        }
+        
+        async function processImage() {
+            const fileInput = document.getElementById('imageInput');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Please select an image file');
+                return;
+            }
+            
+            if (!worker) {
+                await initOCR();
+            }
+            
+            try {
+                const status = document.getElementById('status');
+                const result = document.getElementById('result');
+                
+                status.textContent = 'Processing image...';
+                result.style.display = 'none';
+                
+                const startTime = Date.now();
+                const ocrResult = await worker.recognize(file);
+                const processingTime = Date.now() - startTime;
+                
+                const text = ocrResult.data.text.trim();
+                const confidence = ocrResult.data.confidence;
+                
+                result.innerHTML = `
+                    <h3>OCR Results</h3>
+                    <p><strong>Processing Time:</strong> ${processingTime}ms</p>
+                    <p><strong>Confidence:</strong> ${confidence.toFixed(1)}%</p>
+                    <h4>Extracted Text:</h4>
+                    <pre style="white-space: pre-wrap; background: white; padding: 10px; border: 1px solid #ddd;">${text}</pre>
+                `;
+                result.style.display = 'block';
+                
+                status.textContent = `✅ Processing complete (${processingTime}ms, ${confidence.toFixed(1)}% confidence)`;
+                
+            } catch (error) {
+                document.getElementById('status').textContent = '❌ Processing failed: ' + error.message;
+                console.error('Processing error:', error);
+            }
+        }
+        
+        async function processTestImage(imagePath) {
+            if (!worker) {
+                await initOCR();
+            }
+            
+            try {
+                const status = document.getElementById('status');
+                const result = document.getElementById('result');
+                
+                status.textContent = `Processing ${imagePath}...`;
+                result.style.display = 'none';
+                
+                const startTime = Date.now();
+                const ocrResult = await worker.recognize(imagePath);
+                const processingTime = Date.now() - startTime;
+                
+                const text = ocrResult.data.text.trim();
+                const confidence = ocrResult.data.confidence;
+                
+                result.innerHTML = `
+                    <h3>OCR Results - ${imagePath}</h3>
+                    <p><strong>Processing Time:</strong> ${processingTime}ms</p>
+                    <p><strong>Confidence:</strong> ${confidence.toFixed(1)}%</p>
+                    <h4>Extracted Text:</h4>
+                    <pre style="white-space: pre-wrap; background: white; padding: 10px; border: 1px solid #ddd;">${text}</pre>
+                `;
+                result.style.display = 'block';
+                
+                status.textContent = `✅ Processing complete (${processingTime}ms, ${confidence.toFixed(1)}% confidence)`;
+                
+            } catch (error) {
+                document.getElementById('status').textContent = '❌ Processing failed: ' + error.message;
+                console.error('Processing error:', error);
+            }
+        }
+        
+        // Initialize on page load
+        window.addEventListener('load', initOCR);
+    </script>
+</body>
+</html>

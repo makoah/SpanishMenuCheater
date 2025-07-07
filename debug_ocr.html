@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCR Debug - Spanish Menu Cheater</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-item { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+        .warning { background: #fff3cd; border-color: #ffeaa7; }
+        .console { background: #f8f9fa; padding: 10px; margin: 10px 0; font-family: monospace; }
+        button { margin: 5px; padding: 10px 20px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 OCR Debug Tool</h1>
+    
+    <div id="tests"></div>
+    
+    <hr>
+    
+    <h2>Manual Tests</h2>
+    <button onclick="testCamera()">Test Camera</button>
+    <button onclick="testTesseract()">Test Tesseract</button>
+    <button onclick="testModules()">Test ES6 Modules</button>
+    
+    <input type="file" id="imageInput" accept="image/*" style="display: none;">
+    <button onclick="document.getElementById('imageInput').click()">Upload Test Image</button>
+    
+    <div id="console" class="console"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.2/dist/tesseract.min.js"></script>
+    <script>
+        const testsDiv = document.getElementById('tests');
+        const consoleDiv = document.getElementById('console');
+        
+        function log(message, type = 'info') {
+            console.log(message);
+            consoleDiv.innerHTML += `<div class="${type}">[${new Date().toLocaleTimeString()}] ${message}</div>`;
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        }
+        
+        function addTest(name, result, details = '') {
+            const div = document.createElement('div');
+            div.className = `test-item ${result ? 'success' : 'error'}`;
+            div.innerHTML = `
+                <strong>${result ? '✅' : '❌'} ${name}</strong>
+                ${details ? `<br><small>${details}</small>` : ''}
+            `;
+            testsDiv.appendChild(div);
+        }
+        
+        // Run tests automatically
+        async function runTests() {
+            log('🚀 Starting OCR debug tests...');
+            
+            // Test 1: Tesseract availability
+            try {
+                if (typeof Tesseract !== 'undefined') {
+                    addTest('Tesseract.js CDN', true, 'Tesseract object is available');
+                } else {
+                    addTest('Tesseract.js CDN', false, 'Tesseract not found');
+                }
+            } catch (e) {
+                addTest('Tesseract.js CDN', false, e.message);
+            }
+            
+            // Test 2: WebAssembly support
+            try {
+                const wasmSupported = (() => {
+                    try {
+                        if (typeof WebAssembly === "object" && typeof WebAssembly.instantiate === "function") {
+                            const module = new WebAssembly.Module(Uint8Array.of(0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00));
+                            if (module instanceof WebAssembly.Module)
+                                return new WebAssembly.Instance(module) instanceof WebAssembly.Instance;
+                        }
+                    } catch (e) {}
+                    return false;
+                })();
+                addTest('WebAssembly Support', wasmSupported, wasmSupported ? 'WASM is supported' : 'WASM not supported');
+            } catch (e) {
+                addTest('WebAssembly Support', false, e.message);
+            }
+            
+            // Test 3: Camera API
+            try {
+                const cameraSupported = navigator.mediaDevices && navigator.mediaDevices.getUserMedia;
+                addTest('Camera API', cameraSupported, cameraSupported ? 'getUserMedia available' : 'Camera API not supported');
+            } catch (e) {
+                addTest('Camera API', false, e.message);
+            }
+            
+            // Test 4: ES6 Modules
+            try {
+                const moduleSupported = 'noModule' in HTMLScriptElement.prototype;
+                addTest('ES6 Modules', moduleSupported, moduleSupported ? 'ES6 modules supported' : 'ES6 modules not supported');
+            } catch (e) {
+                addTest('ES6 Modules', false, e.message);
+            }
+            
+            // Test 5: Try to create Tesseract worker
+            try {
+                log('🔧 Testing Tesseract worker creation...');
+                const worker = await Tesseract.createWorker('eng', 1);
+                addTest('Tesseract Worker (English)', true, 'English worker created successfully');
+                await worker.terminate();
+            } catch (e) {
+                addTest('Tesseract Worker (English)', false, e.message);
+                log(`❌ English worker failed: ${e.message}`, 'error');
+            }
+            
+            // Test 6: Try Spanish language pack
+            try {
+                log('🔧 Testing Spanish language pack...');
+                const worker = await Tesseract.createWorker('spa', 1);
+                addTest('Tesseract Worker (Spanish)', true, 'Spanish worker created successfully');
+                await worker.terminate();
+            } catch (e) {
+                addTest('Tesseract Worker (Spanish)', false, e.message);
+                log(`❌ Spanish worker failed: ${e.message}`, 'error');
+            }
+            
+            log('✅ All tests completed!');
+        }
+        
+        async function testCamera() {
+            try {
+                log('📹 Testing camera access...');
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                log('✅ Camera access granted');
+                stream.getTracks().forEach(track => track.stop());
+            } catch (e) {
+                log(`❌ Camera test failed: ${e.message}`, 'error');
+            }
+        }
+        
+        async function testTesseract() {
+            try {
+                log('🔧 Testing Tesseract OCR...');
+                const worker = await Tesseract.createWorker('eng', 1);
+                
+                // Create a simple test image with text
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = 200;
+                canvas.height = 50;
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, 200, 50);
+                ctx.fillStyle = 'black';
+                ctx.font = '20px Arial';
+                ctx.fillText('Hello World', 10, 30);
+                
+                const imageData = canvas.toDataURL();
+                const result = await worker.recognize(imageData);
+                
+                log(`🔍 OCR Result: "${result.data.text.trim()}"`);
+                log(`📊 Confidence: ${result.data.confidence}%`);
+                
+                await worker.terminate();
+            } catch (e) {
+                log(`❌ Tesseract test failed: ${e.message}`, 'error');
+            }
+        }
+        
+        async function testModules() {
+            try {
+                log('📦 Testing ES6 module imports...');
+                const module = await import('./js/main.js');
+                log('✅ Main.js imported successfully');
+            } catch (e) {
+                log(`❌ Module import failed: ${e.message}`, 'error');
+            }
+        }
+        
+        // File upload test
+        document.getElementById('imageInput').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            try {
+                log(`📷 Processing uploaded image: ${file.name}`);
+                const worker = await Tesseract.createWorker('eng', 1);
+                const result = await worker.recognize(file);
+                
+                log(`🔍 OCR Result: "${result.data.text.trim()}"`);
+                log(`📊 Confidence: ${result.data.confidence}%`);
+                
+                await worker.terminate();
+            } catch (e) {
+                log(`❌ Image processing failed: ${e.message}`, 'error');
+            }
+        });
+        
+        // Run tests on page load
+        window.addEventListener('load', runTests);
+    </script>
+</body>
+</html>
