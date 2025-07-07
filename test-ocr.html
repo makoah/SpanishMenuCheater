@@ -78,9 +78,13 @@
                 const response = await fetch(imagePath);
                 const imageBlob = await response.blob();
                 
-                // Process with OCR
-                console.log('🔄 Starting OCR processing...');
-                const ocrResult = await window.ocrProcessor.processImage(imageBlob, 0.7);
+                // Process with OCR using enhanced multi-attempt approach
+                console.log('🔄 Starting enhanced OCR processing...');
+                const ocrResult = await window.ocrProcessor.processImage(imageBlob, {
+                    confidence: 20,
+                    useMultipleAttempts: true,
+                    maxTime: 45000
+                });
                 console.log('✅ OCR Result:', ocrResult);
                 
                 if (!ocrResult || (!ocrResult.text && !ocrResult.fullText)) {

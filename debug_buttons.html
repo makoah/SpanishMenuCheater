@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Button Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .debug-info { margin: 10px 0; padding: 10px; background: #f0f0f0; }
+        button { margin: 5px; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Button Debug Tool</h1>
+    
+    <div class="debug-info">
+        <h3>Settings Button Tests</h3>
+        <button onclick="testSettingsButton()">Test Settings Button</button>
+        <button onclick="testMobileSettingsButton()">Test Mobile Settings Button</button>
+        <button onclick="testDirectModal()">Test Direct Modal Open</button>
+    </div>
+    
+    <div id="results"></div>
+    
+    <script>
+        function log(message) {
+            const results = document.getElementById('results');
+            results.innerHTML += '<div>' + new Date().toLocaleTimeString() + ': ' + message + '</div>';
+        }
+        
+        function testSettingsButton() {
+            log('Testing settings button...');
+            
+            const settingsBtn = document.getElementById('settings-btn');
+            if (settingsBtn) {
+                log('✅ Settings button found: ' + settingsBtn.outerHTML);
+                
+                // Check if it has event listeners
+                log('📋 Button click() method available: ' + (typeof settingsBtn.click === 'function'));
+                
+                try {
+                    settingsBtn.click();
+                    log('✅ Button clicked successfully');
+                } catch (error) {
+                    log('❌ Error clicking button: ' + error.message);
+                }
+            } else {
+                log('❌ Settings button not found');
+            }
+        }
+        
+        function testMobileSettingsButton() {
+            log('Testing mobile settings button...');
+            
+            const mobileBtn = document.getElementById('mobile-settings-btn');
+            if (mobileBtn) {
+                log('✅ Mobile settings button found: ' + mobileBtn.outerHTML);
+                
+                try {
+                    mobileBtn.click();
+                    log('✅ Mobile button clicked successfully');
+                } catch (error) {
+                    log('❌ Error clicking mobile button: ' + error.message);
+                }
+            } else {
+                log('❌ Mobile settings button not found');
+            }
+        }
+        
+        function testDirectModal() {
+            log('Testing direct modal access...');
+            
+            const modal = document.getElementById('ocr-settings-modal');
+            if (modal) {
+                log('✅ Settings modal found');
+                modal.classList.remove('hidden');
+                log('✅ Modal opened directly');
+                
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    log('✅ Modal closed');
+                }, 3000);
+            } else {
+                log('❌ Settings modal not found');
+            }
+        }
+        
+        // Auto-run tests when page loads
+        window.addEventListener('load', () => {
+            log('🚀 Debug page loaded, running automatic tests...');
+            setTimeout(testSettingsButton, 1000);
+            setTimeout(testMobileSettingsButton, 2000);
+        });
+    </script>
+</body>
+</html>

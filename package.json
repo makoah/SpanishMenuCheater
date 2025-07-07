@@ -6,9 +6,9 @@
   "type": "module",
   "scripts": {
     "dev": "live-server --port=3000 --host=localhost --open=/ --wait=200",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest",
+    "test:watch": "node --experimental-vm-modules node_modules/.bin/jest --watch",
+    "test:coverage": "node --experimental-vm-modules node_modules/.bin/jest --coverage",
     "build": "echo 'No build process needed - static files only'",
     "serve": "live-server --port=8080 --host=localhost --open=/ --wait=200",
     "lint": "echo 'ESLint not configured yet'",

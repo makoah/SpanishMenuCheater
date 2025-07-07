@@ -2,7 +2,7 @@
  * Tests for DataManager - Menu Data Processing and Management
  */
 
-const { describe, test, expect, beforeEach, afterEach } = require('@jest/globals');
+import { describe, test, expect, beforeEach, afterEach } from '@jest/globals';
 
 // Mock the DataManager for testing
 class MockDataManager {
