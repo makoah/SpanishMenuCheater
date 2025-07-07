@@ -354,8 +354,16 @@ class SpanishMenuCheater {
         if (this.elements.settingsButton) {
             this.elements.settingsButton.addEventListener('click', this.handleSettingsClick.bind(this));
             console.log('⚙️ Settings button event listener attached successfully');
+            
+            // Debug: Add test click handler
+            this.elements.settingsButton.addEventListener('click', () => {
+                console.log('🔥 DEBUG: Settings button clicked detected!');
+            });
         } else {
             console.warn('❌ Settings button not found - settings functionality disabled');
+            // Debug: Check if button exists in DOM at all
+            const debugButton = document.getElementById('settings-btn');
+            console.log('🔍 DEBUG: Manual search for settings-btn:', debugButton);
         }
         
         // Camera button event listener
@@ -397,6 +405,14 @@ class SpanishMenuCheater {
         }
         
         console.log('🎯 Event listeners set up successfully');
+        
+        // Debug: Global click listener to detect settings button clicks
+        document.addEventListener('click', (event) => {
+            if (event.target.id === 'settings-btn' || event.target.closest('#settings-btn')) {
+                console.log('🔥 DEBUG: Global click detected on settings button!', event.target);
+                console.log('🔥 DEBUG: Settings manager available:', !!this.settingsManager);
+            }
+        });
     }
     
     /**
