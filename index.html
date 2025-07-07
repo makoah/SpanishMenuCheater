@@ -28,6 +28,9 @@
         <div class="header-content">
             <h1 class="app-title">Spanish Menu Cheater</h1>
             <div class="header-controls">
+                <button id="settings-btn" class="settings-btn" aria-label="OCR Settings">
+                    <span class="settings-icon">⚙️</span>
+                </button>
                 <button id="share-btn" class="share-btn" aria-label="Share app">
                     <span class="share-icon">📤</span>
                 </button>
@@ -108,6 +111,11 @@
                     
                     <div class="welcome-description">
                         <p>Discover what's on your plate! Type any Spanish dish to see its translation, ingredients, and dietary information.</p>
+                        <div class="welcome-actions">
+                            <button id="mobile-settings-btn" class="mobile-settings-btn" onclick="document.getElementById('settings-btn').click()">
+                                ⚙️ Setup Google Vision OCR
+                            </button>
+                        </div>
                     </div>
                     
                     <div class="example-searches">
@@ -209,6 +217,200 @@
                     <div class="error-actions">
                         <button class="error-retry-btn">Try Again</button>
                         <button class="error-manual-btn">Enter Manually</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- OCR Settings Modal -->
+    <div id="ocr-settings-modal" class="ocr-settings-modal hidden">
+        <div class="settings-overlay">
+            <div class="settings-container">
+                <div class="settings-header">
+                    <h3 class="settings-title">OCR Settings</h3>
+                    <button id="settings-close" class="settings-close" aria-label="Close settings">
+                        ×
+                    </button>
+                </div>
+                
+                <div class="settings-content">
+                    <!-- Google Vision API Section -->
+                    <section class="settings-section">
+                        <div class="section-header">
+                            <h4 class="section-title">🌐 Google Vision API</h4>
+                            <span class="section-subtitle">Enhanced cloud-based text recognition</span>
+                        </div>
+                        
+                        <div class="api-key-section">
+                            <label for="google-vision-api-key" class="input-label">
+                                API Key
+                                <span class="label-help">Paste your Google Cloud Vision API key</span>
+                            </label>
+                            <div class="api-key-input-group">
+                                <input 
+                                    type="password" 
+                                    id="google-vision-api-key" 
+                                    class="api-key-input"
+                                    placeholder="AIzaSy..."
+                                    autocomplete="off"
+                                    autocorrect="off"
+                                    autocapitalize="off"
+                                    spellcheck="false"
+                                >
+                                <button id="toggle-api-key-visibility" class="toggle-visibility-btn" aria-label="Toggle API key visibility">
+                                    👁️
+                                </button>
+                                <button id="test-api-key" class="test-api-key-btn" aria-label="Test API key">
+                                    Test
+                                </button>
+                                <button id="clear-api-key" class="clear-api-key-btn" aria-label="Clear API key">
+                                    Clear
+                                </button>
+                            </div>
+                            <div id="api-key-status" class="api-key-status hidden">
+                                <span class="status-icon"></span>
+                                <span class="status-text"></span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Usage Tracking Section -->
+                    <section class="settings-section">
+                        <div class="section-header">
+                            <h4 class="section-title">📊 Usage & Cost Control</h4>
+                            <span class="section-subtitle">Monitor API usage and set spending limits</span>
+                        </div>
+                        
+                        <div class="usage-stats">
+                            <div class="usage-overview">
+                                <div class="usage-meter">
+                                    <div class="meter-header">
+                                        <span class="meter-label">This Month</span>
+                                        <span id="usage-percentage" class="meter-percentage">0%</span>
+                                    </div>
+                                    <div class="meter-bar">
+                                        <div id="usage-progress" class="meter-fill"></div>
+                                    </div>
+                                    <div class="meter-details">
+                                        <span id="usage-current">0</span> / <span id="usage-limit">500</span> API calls
+                                        <span id="usage-cost" class="usage-cost">$0.00</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="usage-controls">
+                                <label for="monthly-limit" class="input-label">
+                                    Monthly Limit
+                                    <span class="label-help">Maximum API calls per month</span>
+                                </label>
+                                <div class="limit-input-group">
+                                    <input 
+                                        type="number" 
+                                        id="monthly-limit" 
+                                        class="limit-input"
+                                        min="0"
+                                        max="10000"
+                                        step="50"
+                                        value="500"
+                                    >
+                                    <span class="input-suffix">calls</span>
+                                </div>
+                                <div class="limit-cost-info">
+                                    Estimated monthly cost: <span id="limit-cost">$0.75</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Processing Options Section -->
+                    <section class="settings-section">
+                        <div class="section-header">
+                            <h4 class="section-title">🔧 Processing Options</h4>
+                            <span class="section-subtitle">Configure OCR behavior and preferences</span>
+                        </div>
+                        
+                        <div class="processing-options">
+                            <div class="option-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="enable-notifications" checked>
+                                    <span class="checkbox-custom"></span>
+                                    <span class="checkbox-text">
+                                        <strong>Usage Notifications</strong>
+                                        <span class="option-description">Get warnings when approaching usage limits</span>
+                                    </span>
+                                </label>
+                            </div>
+                            
+                            <div class="option-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="auto-fallback" checked>
+                                    <span class="checkbox-custom"></span>
+                                    <span class="checkbox-text">
+                                        <strong>Auto Fallback</strong>
+                                        <span class="option-description">Automatically use local OCR if Google Vision fails</span>
+                                    </span>
+                                </label>
+                            </div>
+
+                            <div class="option-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="show-processing-source">
+                                    <span class="checkbox-custom"></span>
+                                    <span class="checkbox-text">
+                                        <strong>Show Processing Source</strong>
+                                        <span class="option-description">Display which OCR method was used</span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Statistics Section -->
+                    <section class="settings-section">
+                        <div class="section-header">
+                            <h4 class="section-title">📈 Statistics</h4>
+                            <span class="section-subtitle">Performance metrics and usage history</span>
+                        </div>
+                        
+                        <div class="statistics-grid">
+                            <div class="stat-card">
+                                <div class="stat-value" id="stat-success-rate">--</div>
+                                <div class="stat-label">Success Rate</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="stat-avg-time">--</div>
+                                <div class="stat-label">Avg Time</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="stat-total-processed">--</div>
+                                <div class="stat-label">Total Processed</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="stat-days-remaining">--</div>
+                                <div class="stat-label">Days Remaining</div>
+                            </div>
+                        </div>
+                        
+                        <div class="statistics-actions">
+                            <button id="reset-usage-btn" class="reset-usage-btn">
+                                Reset Usage Data
+                            </button>
+                            <button id="export-stats-btn" class="export-stats-btn">
+                                Export Statistics
+                            </button>
+                        </div>
+                    </section>
+                </div>
+                
+                <div class="settings-footer">
+                    <div class="footer-info">
+                        <small>Google Vision API requires a Google Cloud account with billing enabled.</small>
+                    </div>
+                    <div class="footer-actions">
+                        <button id="settings-save" class="settings-save-btn">
+                            Save Settings
+                        </button>
                     </div>
                 </div>
             </div>
